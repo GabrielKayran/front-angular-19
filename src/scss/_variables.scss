@@ -1,0 +1,183 @@
+$primary-0: #000000;
+$primary-10: #001a4d;
+$primary-20: #002e80;
+$primary-25: #003699;
+$primary-30: #003eb3;
+$primary-35: #0046cc;
+$primary-40: #004ee6;
+$primary-50: #3366ff; // primary color
+$primary-60: #5c7fff;
+$primary-70: #7f99ff;
+$primary-80: #a3b3ff;
+$primary-90: #c7ccff;
+$primary-95: #e6e6ff;
+$primary-98: #f5f5ff;
+$primary-99: #fafaff;
+$primary-100: #ffffff;
+
+$secondary-0: #000000;
+$secondary-10: #1b1c1c;
+$secondary-20: #303030;
+$secondary-25: #3b3b3b;
+$secondary-30: #464747;
+$secondary-35: #525252;
+$secondary-40: #5e5e5e;
+$secondary-50: #777777;
+$secondary-60: #919090;
+$secondary-70: #acabab;
+$secondary-80: #c7c6c6;
+$secondary-90: #e4e2e2;
+$secondary-95: #f2f0f0;
+$secondary-98: #fbf9f8;
+$secondary-99: #fefcfb;
+$secondary-100: #ffffff;
+
+$tertiary-0: #000000;
+$tertiary-10: #2e1065;
+$tertiary-20: #452580;
+$tertiary-25: #523099;
+$tertiary-30: #5f3bb3;
+$tertiary-35: #6d46cc;
+$tertiary-40: #7b51e6;
+$tertiary-50: #9966ff;
+$tertiary-60: #b380ff;
+$tertiary-70: #cc99ff;
+$tertiary-80: #e6b3ff;
+$tertiary-90: #f0ccff;
+$tertiary-95: #f8e6ff;
+$tertiary-98: #fcf5ff;
+$tertiary-99: #fefaff;
+$tertiary-100: #ffffff;
+
+$neutral-0: #000000;
+$neutral-10: #1a1c1e;
+$neutral-20: #2f3133;
+$neutral-25: #3a3c3e;
+$neutral-30: #464749;
+$neutral-35: #525254;
+$neutral-40: #5e5e60;
+$neutral-50: #777779;
+$neutral-60: #919092;
+$neutral-70: #acabac;
+$neutral-80: #c7c6c7;
+$neutral-90: #e3e2e3;
+$neutral-95: #f1f0f1;
+$neutral-98: #faf9fa;
+$neutral-99: #fdfcfd;
+$neutral-100: #ffffff;
+
+$neutral-4: #0f1113;
+$neutral-6: #141618;
+$neutral-12: #1f2123;
+$neutral-17: #292b2d;
+$neutral-22: #343638;
+$neutral-24: #383a3c;
+$neutral-87: #dadada;
+$neutral-92: #e8e7e8;
+$neutral-94: #eeeded;
+$neutral-96: #f3f2f3;
+
+$neutral-variant-0: #000000;
+$neutral-variant-10: #161b20;
+$neutral-variant-20: #2b3035;
+$neutral-variant-25: #363b40;
+$neutral-variant-30: #42464b;
+$neutral-variant-35: #4e5256;
+$neutral-variant-40: #5a5e62;
+$neutral-variant-50: #73777b;
+$neutral-variant-60: #8d9094;
+$neutral-variant-70: #a7aaae;
+$neutral-variant-80: #c3c6ca;
+$neutral-variant-90: #dfe2e6;
+$neutral-variant-95: #edf0f4;
+$neutral-variant-98: #f6f9fc;
+$neutral-variant-99: #fafcff;
+$neutral-variant-100: #ffffff;
+
+$error-0: #000000;
+$error-10: #410002;
+$error-20: #690005;
+$error-25: #7e0007;
+$error-30: #93000a;
+$error-35: #a80710;
+$error-40: #ba1a1a;
+$error-50: #de3730;
+$error-60: #ff5449;
+$error-70: #ff897d;
+$error-80: #ffb4ab;
+$error-90: #ffdad6;
+$error-95: #ffedea;
+$error-98: #fff8f7;
+$error-99: #fffbff;
+$error-100: #ffffff;
+
+$color-primary: $primary-50;
+$color-primary-light: $primary-80;
+$color-primary-dark: $primary-20;
+$color-primary-contrast: #ffffff;
+
+$color-secondary: $secondary-50;
+$color-secondary-light: $secondary-80;
+$color-secondary-dark: $secondary-20;
+
+$color-tertiary: $tertiary-50;
+$color-tertiary-light: $tertiary-80;
+$color-tertiary-dark: $tertiary-20;
+
+$color-surface: $neutral-99;
+$color-surface-variant: $neutral-variant-90;
+$color-surface-container: $neutral-95;
+$color-surface-container-high: $neutral-92;
+$color-surface-container-highest: $neutral-87;
+
+$color-on-surface: $neutral-10;
+$color-on-surface-variant: $neutral-variant-30;
+$color-on-primary: #ffffff;
+$color-on-secondary: #ffffff;
+$color-on-tertiary: #ffffff;
+
+$color-outline: $neutral-variant-50;
+$color-outline-variant: $neutral-variant-80;
+
+$color-error: $error-40;
+$color-error-light: $error-80;
+$color-error-dark: $error-20;
+$color-on-error: #ffffff;
+
+$color-success: #00c853;
+$color-success-light: #69f0ae;
+$color-success-dark: #00a040;
+$color-on-success: #ffffff;
+
+$color-warning: #ff9800;
+$color-warning-light: #ffcc02;
+$color-warning-dark: #f57c00;
+$color-on-warning: #000000;
+
+$shadow-color: rgba(0, 0, 0, 0.2);
+$elevation-1: 0 1px 3px $shadow-color;
+$elevation-2: 0 2px 6px $shadow-color;
+$elevation-3: 0 4px 8px $shadow-color;
+$elevation-4: 0 6px 12px $shadow-color;
+$elevation-5: 0 8px 16px $shadow-color;
+
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1400px;
+
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+
+$border-radius-xs: 4px;
+$border-radius-sm: 8px;
+$border-radius-md: 12px;
+$border-radius-lg: 16px;
+$border-radius-xl: 24px;
+$border-radius-full: 50%;
