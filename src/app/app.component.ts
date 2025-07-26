@@ -7,6 +7,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { NgClass } from '@angular/common';
 import { MenuComponent } from '@app/features/menu/menu.component';
+import { HeaderComponent } from '@shared/components/header/header.component';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -23,6 +24,7 @@ import { filter } from 'rxjs/operators';
 		NgClass,
 		MatSidenavContent,
 		MenuComponent,
+		HeaderComponent,
 	],
 })
 export class AppComponent implements OnInit {
@@ -30,7 +32,6 @@ export class AppComponent implements OnInit {
 	public onResize(): void {
 		this._verifyMobile();
 	}
-	title = 'ambev-frontend';
 	public hasUser = signal(false);
 	public isCollapsed = signal(false);
 	public isMobile = signal(false);
@@ -60,14 +61,11 @@ export class AppComponent implements OnInit {
 	}
 
 	private _setupRouteListener(): void {
-		this._router.events
-			.pipe(filter(event => event instanceof NavigationEnd))
-			.subscribe((event: NavigationEnd) => {
-				const authRoutes = ['/login', '/register'];
-				const isAuthRoute = authRoutes.some(route => event.url.includes(route));
-				this.showSidenav.set(!isAuthRoute);
-			});
-
+		this._router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
+			const authRoutes = ['/login', '/register'];
+			const isAuthRoute = authRoutes.some(route => event.url.includes(route));
+			this.showSidenav.set(!isAuthRoute);
+		});
 	}
 
 	private _getSessionToken() {

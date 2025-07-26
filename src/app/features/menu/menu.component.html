@@ -1,41 +1,20 @@
 <section id="front-menu-container" [class.side-nav-open]="!isCollapsed()" [class.side-nav-closed]="isCollapsed()">
 	<div>
-		<section class="menu-header">
-			<button
-				mat-icon-button
-				color="primary"
-				(click)="emitMenuToggle($event)"
-				[matTooltip]="tooltipText"
-				[matTooltipPosition]="'above'"
-				[matTooltipShowDelay]="50"
-			>
-				<mat-icon>menu</mat-icon>
-			</button>
-			@if (!isCollapsed()) {
-				<mat-icon class="dashboard-icon">dashboard</mat-icon>
-			}
-		</section>
 		<nav class="menu-navigation">
 			<div class="d-flex flex-column align-items-center justify-content-center gap-2">
-				@if (isCollapsed()) {
-					<button mat-icon-button class="icon-button" matTooltip="Cadastrar Novo Produto">
-						<mat-icon>build</mat-icon>
-					</button>
-				} @else {
-					<button mat-fab extended class="menu-item">
-						<mat-icon>build</mat-icon>
-						<span class="truncate">Cadastrar Novo Produto</span>
-					</button>
+				@for (menuItem of menuItems; track menuItem.label) {
+					@if (isCollapsed()) {
+						<button mat-icon-button class="icon-button" [matTooltip]="menuItem.label" (click)="menuItem.action()">
+							<mat-icon>{{ menuItem.icon }}</mat-icon>
+						</button>
+					} @else {
+						<button mat-fab extended class="menu-item" (click)="menuItem.action()">
+							<mat-icon>{{ menuItem.icon }}</mat-icon>
+							<span class="truncate">{{ menuItem.label }}</span>
+						</button>
+					}
 				}
 			</div>
 		</nav>
 	</div>
-	@if (!isCollapsed()) {
-		<section class="menu-footer">
-			<button mat-fab extended class="menu-item" (click)="logoutEvent.emit()">
-				<mat-icon>exit_to_app</mat-icon>
-				<span>Logout</span>
-			</button>
-		</section>
-	}
 </section>

@@ -1,50 +1,49 @@
 @use '../../../scss/variables' as vars;
 
 .dashboard-container {
-  min-height: 100vh;
-  background-color: vars.$color-surface-variant;
+	min-height: 100vh;
 }
 
 .dashboard-toolbar {
-  box-shadow: vars.$elevation-2;
-  
-  .toolbar-title {
-    display: flex;
-    align-items: center;
-    gap: vars.$spacing-sm;
-    font-weight: 600;
-    
-    mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-    }
-  }
-  
-  .toolbar-spacer {
-    flex: 1 1 auto;
-  }
-  
-  .user-info {
-    margin-right: vars.$spacing-md;
-    font-size: 0.875rem;
-    opacity: 0.9;
-  }
+	box-shadow: vars.$elevation-2;
+
+	.toolbar-title {
+		display: flex;
+		align-items: center;
+		gap: vars.$spacing-sm;
+		font-weight: 600;
+
+		mat-icon {
+			font-size: 24px;
+			width: 24px;
+			height: 24px;
+		}
+	}
+
+	.toolbar-spacer {
+		flex: 1 1 auto;
+	}
+
+	.user-info {
+		margin-right: vars.$spacing-md;
+		font-size: 0.875rem;
+		opacity: 0.9;
+	}
 }
 
 .dashboard-content {
-  padding: vars.$spacing-xl;
-  max-width: 1200px;
-  margin: 0 auto;
+	padding: vars.$spacing-xl;
+	max-width: 1200px;
+	margin: 0 auto;
 }
 
 .welcome-section {
-  margin-bottom: vars.$spacing-xl;
+	margin-bottom: vars.$spacing-xl;
 }
 
 .welcome-card {
-  max-width: 600px;
-  margin: 0 auto;
-  box-shadow: vars.$elevation-3;
-  border-radius: vars.$border-radius-lg;
+	max-width: 600px;
+	margin: 0 auto;
+	box-shadow: vars.$elevation-3;
+	border-radius: vars.$border-radius-lg;
 }

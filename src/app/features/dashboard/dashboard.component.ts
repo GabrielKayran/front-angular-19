@@ -6,11 +6,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { CommonModule } from '@angular/common';
 import { GlobalStateService } from '@core/services/global-state.service';
 import { Router } from '@angular/router';
-import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'app-dashboard',
-	imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatToolbarModule, MatTooltip],
+	imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatToolbarModule],
 	templateUrl: './dashboard.component.html',
 	styleUrl: './dashboard.component.scss',
 })
@@ -27,12 +26,5 @@ export class DashboardComponent implements OnInit {
 		} else {
 			this._router.navigate(['/login']);
 		}
-	}
-
-	logout(): void {
-		this._globalState.token.set('');
-		localStorage.removeItem('auth_token');
-
-		this._router.navigate(['/login']);
 	}
 }
