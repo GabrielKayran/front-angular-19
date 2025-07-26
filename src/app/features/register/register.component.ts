@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -14,8 +14,9 @@ import { finalize } from 'rxjs';
 import { UsersClientService } from '@app/clients/users/users-client.service';
 import { CreateUserRequest } from '@app/clients/users/user.interface';
 import { NgxMaskDirective } from 'ngx-mask';
+import { CustomValidators } from '@shared/validators';
 
-interface CadastroFormControls {
+interface RegisterFormControls {
 	username: FormControl<string>;
 	email: FormControl<string>;
 	phone: FormControl<string>;
@@ -23,7 +24,7 @@ interface CadastroFormControls {
 }
 
 @Component({
-	selector: 'app-cadastro',
+	selector: 'app-register',
 	imports: [
 		CommonModule,
 		RouterModule,
@@ -36,10 +37,10 @@ interface CadastroFormControls {
 		MatProgressSpinnerModule,
 		NgxMaskDirective,
 	],
-	templateUrl: './cadastro.component.html',
-	styleUrl: './cadastro.component.scss',
+	templateUrl: './register.component.html',
+	styleUrl: './register.component.scss',
 })
-export class CadastroComponent {
+export class RegisterComponent {
 	private _fb = inject(FormBuilder);
 	private _usersClient = inject(UsersClientService);
 	private _router = inject(Router);
@@ -48,14 +49,23 @@ export class CadastroComponent {
 	isLoading = signal(false);
 	hidePassword = signal(true);
 
-	form: FormGroup<CadastroFormControls> = this._fb.group({
-		username: this._fb.control('', { validators: [Validators.required, Validators.minLength(3)], nonNullable: true }),
-		email: this._fb.control('', { validators: [Validators.required, Validators.email], nonNullable: true }),
-		phone: this._fb.control('', {
-			validators: [Validators.required, Validators.pattern(/^\(?\d{2}\)?[\s-]?\d{4,5}[\s-]?\d{4}$/)],
+	form: FormGroup<RegisterFormControls> = this._fb.group({
+		username: this._fb.control('', {
+			validators: [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
 			nonNullable: true,
 		}),
-		password: this._fb.control('', { validators: [Validators.required, Validators.minLength(6)], nonNullable: true }),
+		email: this._fb.control('', {
+			validators: [CustomValidators.email()],
+			nonNullable: true,
+		}),
+		phone: this._fb.control('', {
+			validators: [CustomValidators.phone()],
+			nonNullable: true,
+		}),
+		password: this._fb.control('', {
+			validators: [CustomValidators.password()],
+			nonNullable: true,
+		}),
 	});
 
 	public togglePasswordVisibility(): void {
@@ -72,12 +82,25 @@ export class CadastroComponent {
 		if (!field || !field.errors) return '';
 
 		if (field.errors['required']) return `${this.getFieldLabel(fieldName)} é obrigatório`;
-		if (field.errors['email']) return 'E-mail inválido';
 		if (field.errors['minlength']) {
 			const minLength = field.errors['minlength'].requiredLength;
 			return `${this.getFieldLabel(fieldName)} deve ter pelo menos ${minLength} caracteres`;
 		}
-		if (field.errors['pattern']) return 'Formato de telefone inválido';
+		if (field.errors['maxlength']) {
+			const maxLength = field.errors['maxlength'].requiredLength;
+			return `${this.getFieldLabel(fieldName)} deve ter no máximo ${maxLength} caracteres`;
+		}
+
+		if (field.errors['maxLength']) return field.errors['maxLength'];
+		if (field.errors['invalidEmail']) return field.errors['invalidEmail'];
+
+		if (field.errors['minLength']) return field.errors['minLength'];
+		if (field.errors['uppercase']) return field.errors['uppercase'];
+		if (field.errors['lowercase']) return field.errors['lowercase'];
+		if (field.errors['number']) return field.errors['number'];
+		if (field.errors['specialChar']) return field.errors['specialChar'];
+
+		if (field.errors['invalidPhone']) return field.errors['invalidPhone'];
 
 		return 'Campo inválido';
 	}
@@ -104,12 +127,12 @@ export class CadastroComponent {
 		const request: CreateUserRequest = {
 			username: formValue.username,
 			email: formValue.email,
-			phone: formValue.phone,
+			phone: formValue.phone.replace(/\D/g, ''),
 			password: formValue.password,
 		};
 
 		this._usersClient
-			.createUser(request)
+			.createUser(request, true)
 			.pipe(finalize(() => this.isLoading.set(false)))
 			.subscribe({
 				next: () => {
@@ -120,7 +143,7 @@ export class CadastroComponent {
 					});
 					setTimeout(() => {
 						this._router.navigate(['/login']);
-					}, 1500);
+					}, 500);
 				},
 			});
 	}
