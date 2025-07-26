@@ -50,9 +50,8 @@ export class AppComponent implements OnInit {
 	}
 
 	logout(): void {
-		this._globalStateService.token.set('');
-		localStorage.removeItem('auth_token');
-
+		this._globalStateService.clearToken();
+		this.hasUser.set(false);
 		this._router.navigate(['/login']);
 	}
 
@@ -69,11 +68,8 @@ export class AppComponent implements OnInit {
 	}
 
 	private _getSessionToken() {
-		const token = sessionStorage.getItem('access_token');
-		if (token) {
-			sessionStorage.removeItem('access_token');
-			this._globalStateService.token.set(token);
-		}
+
 		this.hasUser.set(!!this._globalStateService.token());
 	}
 }
+ 

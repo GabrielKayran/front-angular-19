@@ -9,9 +9,9 @@ import { UserRole } from '@shared/interfaces';
 const SHARED_DATA_EVENT = 'shared-data';
 
 export interface DecodedToken {
-	userId: string;
-	username: string;
-	userRole: UserRole;
+	nameid: string;
+	unique_name: string;
+	role: UserRole;
 	nbf: number;
 	exp: number;
 	iat: number;
@@ -23,14 +23,20 @@ export interface DecodedToken {
 export class GlobalStateService {
 	token = signal('');
 
+	constructor() {
+		this.initializeToken();
+	}
+
 	user = computed<UserModel | null>(() => {
 		const decodedToken = this._decodedToken(this.token());
 		if (!decodedToken) return null;
 
+		console.log(decodedToken);
+
 		return {
-			id: decodedToken.userId,
-			username: decodedToken.username,
-			role: decodedToken.userRole,
+			id: decodedToken.nameid,
+			username: decodedToken.unique_name,
+			role: decodedToken.role,
 		};
 	});
 
@@ -39,6 +45,19 @@ export class GlobalStateService {
 	public setToken(token: string): void {
 		this.token.set(token);
 		sessionStorage.setItem('auth_token', token);
+	}
+
+	public initializeToken(): void {
+		const authToken = sessionStorage.getItem('auth_token');
+
+		if (authToken) {
+			this.token.set(authToken);
+		}
+	}
+
+	public clearToken(): void {
+		this.token.set('');
+		sessionStorage.removeItem('auth_token');
 	}
 
 	private _decodedToken(token: string): DecodedToken | null {

@@ -20,10 +20,8 @@ export class DashboardComponent implements OnInit {
 	user = this._globalState.user;
 
 	ngOnInit(): void {
-		const token = sessionStorage.getItem('auth_token');
-		if (token) {
-			this._globalState.token.set(token);
-		} else {
+		console.log(this.user(), 'DashboardComponent ngOnInit');
+		if (!this._globalState.token()) {
 			this._router.navigate(['/login']);
 		}
 	}

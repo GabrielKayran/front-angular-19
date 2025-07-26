@@ -1,0 +1,130 @@
+.product-form-container {
+	padding: 2rem;
+	max-width: 600px;
+	margin: 0 auto;
+
+	.header-section {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
+
+		h1 {
+			margin: 0;
+			font-size: 2rem;
+			font-weight: 400;
+			color: #333;
+		}
+
+		.close-btn {
+			color: #666;
+		}
+	}
+
+	.form-section {
+		mat-card {
+			box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+			border-radius: 8px;
+
+			mat-card-content {
+				padding: 2rem;
+			}
+		}
+
+		form {
+			mat-form-field {
+				width: 100%;
+				margin-bottom: 1rem;
+			}
+
+			.row {
+				display: flex;
+				gap: 1rem;
+				margin-bottom: 1rem;
+
+				.col-12 {
+					flex: 1;
+				}
+
+				.col-md-6 {
+					flex: 1;
+				}
+			}
+
+			.image-preview {
+				text-align: center;
+				margin: 1rem 0;
+				padding: 1rem;
+				background: #f5f5f5;
+				border-radius: 8px;
+
+				img {
+					max-width: 200px;
+					max-height: 200px;
+					border-radius: 8px;
+					object-fit: cover;
+					box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+				}
+			}
+
+			.rating-section {
+				margin: 2rem 0 1rem 0;
+				padding: 1rem;
+				background: #f8f9fa;
+				border-radius: 8px;
+
+				h3 {
+					margin: 0 0 1rem 0;
+					font-size: 1.1rem;
+					font-weight: 500;
+					color: #666;
+				}
+			}
+
+			.form-actions {
+				display: flex;
+				justify-content: flex-end;
+				gap: 1rem;
+				margin-top: 2rem;
+				padding-top: 1rem;
+				border-top: 1px solid #e0e0e0;
+
+				button {
+					min-width: 120px;
+				}
+			}
+		}
+	}
+}
+
+// Responsividade
+@media (max-width: 768px) {
+	.product-form-container {
+		padding: 1rem;
+
+		.header-section {
+			flex-direction: column;
+			gap: 1rem;
+			text-align: center;
+		}
+
+		.form-section {
+			mat-card-content {
+				padding: 1rem;
+			}
+
+			form .row {
+				flex-direction: column;
+				gap: 0;
+			}
+
+			.form-actions {
+				flex-direction: column;
+
+				button {
+					width: 100%;
+				}
+			}
+		}
+	}
+}
