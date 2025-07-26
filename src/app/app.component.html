@@ -1,4 +1,32 @@
 <app-loading />
-<router-outlet />
-
-
+<section id="chassi">
+	@if (showSidenav()) {
+		@if (isMobile() && isCollapsed()) {
+			<button id="menu-mobile" color="primary" mat-icon-button (click)="toggleCollapse()">
+				<mat-icon>menu</mat-icon>
+			</button>
+		}
+		<mat-sidenav-container class="front-menu" autosize [hasBackdrop]="false">
+			<mat-sidenav
+				class="menu-vert"
+				[opened]="true"
+				disableClose
+				[mode]="isMobile() ? 'over' : 'side'"
+				[ngClass]="{ collapsed: isCollapsed() }"
+			>
+				<app-menu
+					(menuToggleEvent)="toggleCollapse()"
+					(logoutEvent)="logout()"
+					[isCollapsed]="isCollapsed()"
+				></app-menu>
+			</mat-sidenav>
+			<mat-sidenav-content class="menu-hor">
+				<router-outlet />
+			</mat-sidenav-content>
+		</mat-sidenav-container>
+	} @else {
+		<div class="auth-content">
+			<router-outlet />
+		</div>
+	}
+</section>

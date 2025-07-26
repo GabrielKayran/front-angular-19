@@ -6,10 +6,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { CommonModule } from '@angular/common';
 import { GlobalStateService } from '@core/services/global-state.service';
 import { Router } from '@angular/router';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'app-dashboard',
-	imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatToolbarModule],
+	imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, MatToolbarModule, MatTooltip],
 	templateUrl: './dashboard.component.html',
 	styleUrl: './dashboard.component.scss',
 })
@@ -20,22 +21,18 @@ export class DashboardComponent implements OnInit {
 	user = this._globalState.user;
 
 	ngOnInit(): void {
-		// Verificar se há token armazenado no localStorage
 		const token = sessionStorage.getItem('auth_token');
 		if (token) {
 			this._globalState.token.set(token);
 		} else {
-			// Se não há token, redirecionar para login
 			this._router.navigate(['/login']);
 		}
 	}
 
 	logout(): void {
-		// Limpar token do estado global e localStorage
 		this._globalState.token.set('');
 		localStorage.removeItem('auth_token');
 
-		// Redirecionar para login
 		this._router.navigate(['/login']);
 	}
 }

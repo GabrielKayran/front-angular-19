@@ -1,0 +1,191 @@
+@use '../../../scss/variables' as vars;
+
+#front-menu-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+	background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+	transition:
+		width 0.3s ease,
+		opacity 0.3s ease;
+	overflow: hidden;
+	position: relative;
+
+	&.side-nav-open {
+		width: 100%;
+	}
+
+	&.side-nav-closed {
+		width: calc(100% - 1px);
+	}
+
+	.menu-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1rem 1rem 1.5rem;
+		background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+		border-bottom: 1px solid #e2e8f0;
+		position: sticky;
+		top: 0;
+		z-index: 2;
+
+		.search-button {
+			color: #475569;
+			transition: opacity 0.3s ease;
+		}
+
+		.dashboard-icon {
+			font-size: 2rem;
+		}
+	}
+
+	&.side-nav-closed {
+		.menu-title,
+		.menu-item-label {
+			display: none !important;
+		}
+	}
+
+	.menu-section-title {
+		margin-left: 10px;
+		color: #64748b;
+		font-size: 0.95rem;
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: 0.5px;
+	}
+}
+
+.menu-navigation {
+	padding: 1.5rem 0.5rem 0 0.5rem;
+
+	.menu-item {
+		padding: 8px 8px 8px 12px;
+		@extend .basic-button;
+
+		&:hover {
+			background-color: #f1f5f9 !important;
+			color: #1e293b;
+			transform: translateX(4px);
+
+			.options-button {
+				opacity: 1;
+				visibility: visible;
+			}
+		}
+
+		&.selected {
+			background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+			color: #ffffff;
+
+			.initial {
+				background-color: #ffffff;
+				color: vars.$color-primary;
+				border: 1px solid #ffffff;
+			}
+
+			&:hover .options-button {
+				opacity: 1;
+				visibility: visible;
+			}
+		}
+
+		::ng-deep {
+			.mdc-button__label {
+				display: flex;
+				justify-content: space-between;
+				width: 100%;
+			}
+		}
+
+		.options-button {
+			opacity: 0;
+			visibility: hidden;
+			transition:
+				opacity 0.2s ease,
+				visibility 0.2s ease;
+			color: inherit;
+
+			@media (max-width: 768px) {
+				opacity: 1 !important;
+				visibility: visible !important;
+			}
+
+			&.options-button-small {
+				width: 28px;
+				height: 28px;
+				line-height: 28px;
+				min-width: 28px;
+				margin: 0;
+				padding: 0;
+				position: relative;
+				top: -1px;
+				right: -2px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+
+				i {
+					font-size: 14px;
+					position: relative;
+					right: -1px;
+				}
+			}
+		}
+	}
+}
+
+.icon-button {
+	color: #64748b;
+}
+
+.basic-button {
+	margin: 0.25rem;
+	width: calc(100% - 0.5rem);
+	background: transparent !important;
+	box-shadow: none !important;
+	justify-content: flex-start;
+	color: #64748b;
+	transition: all 0.3s ease;
+}
+
+.menu-footer {
+	padding: 1rem;
+	border-top: 1px solid #e2e8f0;
+	background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+
+	button {
+		@extend .basic-button;
+	}
+}
+.delete-icon {
+	color: vars.$error-30 !important;
+}
+
+.options-container {
+	height: calc(100vh - 310px);
+	overflow-y: auto;
+	overflow-x: hidden;
+	padding-right: 5px;
+
+	&::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	@media (max-width: 768px) {
+		height: calc(100vh - 250px);
+	}
+}
+
+.load-more-container {
+	padding: 0 8px;
+}
+.truncate {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: inline-block;
+	max-width: 200px;
+}

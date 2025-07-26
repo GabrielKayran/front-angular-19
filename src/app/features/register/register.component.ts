@@ -8,11 +8,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize } from 'rxjs';
 
 import { UsersClientService } from '@app/clients/users/users-client.service';
 import { CreateUserRequest } from '@app/clients/users/user.interface';
+import { UserRole } from '@shared/interfaces';
 import { NgxMaskDirective } from 'ngx-mask';
 import { CustomValidators } from '@shared/validators';
 
@@ -21,6 +23,7 @@ interface RegisterFormControls {
 	email: FormControl<string>;
 	phone: FormControl<string>;
 	password: FormControl<string>;
+	userType: FormControl<UserRole>;
 }
 
 @Component({
@@ -35,6 +38,7 @@ interface RegisterFormControls {
 		MatButtonModule,
 		MatIconModule,
 		MatProgressSpinnerModule,
+		MatSelectModule,
 		NgxMaskDirective,
 	],
 	templateUrl: './register.component.html',
@@ -48,6 +52,12 @@ export class RegisterComponent {
 
 	isLoading = signal(false);
 	hidePassword = signal(true);
+
+	// Opções de tipo de usuário
+	userTypeOptions: { value: UserRole; label: string }[] = [
+		{ value: 'Customer', label: 'Cliente' },
+		{ value: 'Admin', label: 'Administrador' },
+	];
 
 	form: FormGroup<RegisterFormControls> = this._fb.group({
 		username: this._fb.control('', {
@@ -64,6 +74,10 @@ export class RegisterComponent {
 		}),
 		password: this._fb.control('', {
 			validators: [CustomValidators.password()],
+			nonNullable: true,
+		}),
+		userType: this._fb.control('Customer' as UserRole, {
+			validators: [Validators.required],
 			nonNullable: true,
 		}),
 	});
@@ -111,6 +125,7 @@ export class RegisterComponent {
 			email: 'E-mail',
 			phone: 'Telefone',
 			password: 'Senha',
+			userType: 'Tipo de usuário',
 		};
 		return labels[fieldName] || fieldName;
 	}
@@ -129,6 +144,7 @@ export class RegisterComponent {
 			email: formValue.email,
 			phone: formValue.phone.replace(/\D/g, ''),
 			password: formValue.password,
+			role: formValue.userType,
 		};
 
 		this._usersClient
