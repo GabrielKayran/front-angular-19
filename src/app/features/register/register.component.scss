@@ -29,22 +29,21 @@
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	height: 35vh;
+	flex: 1;
+	min-height: 0;
 	background: transparent;
 	color: white;
 	text-align: center;
-	padding: 40px 16px;
+	padding: 32px 16px 16px 16px;
 	position: relative;
 	z-index: 1;
 
-	@media (max-width: 576px) {
-		height: 30vh;
-		padding: 32px 12px;
+	@media (max-width: 768px) {
+		padding: 24px 12px 12px 12px;
 	}
 
-	@media (max-width: 360px) {
-		height: 28vh;
-		padding: 24px 8px;
+	@media (max-width: 576px) {
+		padding: 20px 8px 8px 8px;
 	}
 
 	.welcome-text {
@@ -176,30 +175,30 @@
 
 .form-section {
 	display: flex;
-	justify-content: center;
-	align-items: flex-start;
-	flex: 1;
-	padding: 32px 16px;
-	margin-top: -12rem;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-start;
+	flex: 2;
+	min-height: 0;
+	padding: 16px;
 	z-index: 10;
 
-	@media (max-width: 576px) {
-		padding: 16px 8px;
-		margin-top: -8rem;
-		align-items: stretch;
+	@media (max-width: 768px) {
+		padding: 16px 12px;
 	}
 
-	@media (max-width: 360px) {
-		padding: 12px 6px;
-		margin-top: -6rem;
+	@media (max-width: 576px) {
+		padding: 12px 8px;
 	}
 
 	.form-container {
 		width: 90%;
 		max-width: 400px;
+		display: flex;
+		justify-content: center;
 
 		@media (max-width: 576px) {
-			width: 100%;
+			width: 95%;
 			max-width: none;
 		}
 	}
@@ -219,7 +218,7 @@ mat-card {
 	@media (max-width: 576px) {
 		padding: 20px;
 		border-radius: 16px;
-		margin: 0 4px;
+		margin: 0 auto;
 	}
 
 	@media (max-width: 360px) {
