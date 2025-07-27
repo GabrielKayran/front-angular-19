@@ -96,7 +96,13 @@
 						<div class="product-card">
 							<div class="product-card-header">
 								<div class="product-image">
-									<img width="80" height="80" [ngSrc]="product.image" [alt]="product.title" />
+									<img 
+										width="80" 
+										height="80" 
+										[ngSrc]="product.image" 
+										[alt]="product.title"
+										appImageFallback="assets/images/default.png"
+									/>
 								</div>
 								<div class="product-info">
 									<div class="product-category-chip">

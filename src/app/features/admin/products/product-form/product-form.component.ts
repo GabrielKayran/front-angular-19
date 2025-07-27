@@ -25,6 +25,7 @@ import {
 import { GlobalStateService } from '@core/services/global-state.service';
 import { UserModel } from '@app/clients/users';
 import { finalize } from 'rxjs';
+import { ImageFallbackDirective } from '@shared/directives/image-fallback.directive';
 
 interface ProductFormControls {
 	title: FormControl<string>;
@@ -63,6 +64,7 @@ interface ProductFormValue {
 		MatToolbarModule,
 		MatChipsModule,
 		MatAutocompleteModule,
+		ImageFallbackDirective,
 	],
 	templateUrl: './product-form.component.html',
 	styleUrls: ['./product-form.component.scss'],
@@ -210,7 +212,6 @@ export class ProductFormComponent implements OnInit {
 	private _getUser(): void {
 		this._globalState.populateUser$.subscribe({
 			next: data => {
-				console.log(data);
 				if (data) {
 					this._checkAdminAccess(data);
 				}
@@ -293,8 +294,7 @@ export class ProductFormComponent implements OnInit {
 				});
 				this._router.navigate(['/admin/products']);
 			},
-			error: error => {
-				console.error('Erro ao criar produto:', error);
+			error: () => {
 				this._snackBar.open('Erro ao criar produto', 'Fechar', {
 					duration: 3000,
 					panelClass: ['error-snackbar'],
@@ -323,8 +323,7 @@ export class ProductFormComponent implements OnInit {
 				});
 				this._router.navigate(['/admin/products']);
 			},
-			error: error => {
-				console.error('Erro ao atualizar produto:', error);
+			error: () => {
 				this._snackBar.open('Erro ao atualizar produto', 'Fechar', {
 					duration: 3000,
 					panelClass: ['error-snackbar'],

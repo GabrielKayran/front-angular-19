@@ -31,12 +31,6 @@
 	padding: 3rem 2rem;
 }
 
-.empty-cart mat-icon {
-	font-size: 4rem;
-	margin-bottom: 1rem;
-	color: #ccc;
-}
-
 .empty-cart h3 {
 	margin-bottom: 1rem;
 }
@@ -46,11 +40,22 @@
 }
 
 .cart-items {
-	margin-bottom: 2rem;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
 }
 
-.cart-item {
-	padding: 1rem 0;
+.cart-item-card {
+	padding: 1rem;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: box-shadow 0.2s ease;
+
+	&:hover {
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	}
 }
 
 .item-content {

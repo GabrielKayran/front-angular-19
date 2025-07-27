@@ -27,6 +27,8 @@ import {
 import { CartService } from '@core/services/cart.service';
 
 import { ProductsClientService } from '@app/clients/products/products-client.service';
+import { ImageFallbackDirective } from '@shared/directives/image-fallback.directive';
+import { MenuService } from '@core/services/menu.service';
 import {
 	GetProductsRequest,
 	GetProductsResponseDto,
@@ -64,6 +66,7 @@ interface FilterFormControls {
 		MatBadgeModule,
 		ReactiveFormsModule,
 		NgOptimizedImage,
+		ImageFallbackDirective,
 	],
 	templateUrl: './products-list.component.html',
 	styleUrls: ['./products-list.component.scss'],
@@ -76,6 +79,7 @@ export class ProductsListComponent implements OnInit {
 	private _fb = inject(FormBuilder);
 	private _dialog = inject(MatDialog);
 	private _cartService = inject(CartService);
+	private _menuService = inject(MenuService);
 
 	products = signal<GetProductsResponseDto[]>([]);
 	categories = signal<string[]>([]);
@@ -100,6 +104,7 @@ export class ProductsListComponent implements OnInit {
 	});
 
 	ngOnInit(): void {
+		this._closeMenu();
 		this._checkAdminAccess();
 		this._loadCategories();
 		this._loadProducts();
@@ -155,8 +160,7 @@ export class ProductsListComponent implements OnInit {
 					});
 					this._loadProducts();
 				},
-				error: error => {
-					console.error('Erro ao excluir produto:', error);
+				error: () => {
 					this._snackBar.open('Erro ao excluir produto', 'Fechar', {
 						duration: 3000,
 						panelClass: ['error-snackbar'],
@@ -223,8 +227,7 @@ export class ProductsListComponent implements OnInit {
 					panelClass: ['success-snackbar'],
 				});
 			},
-			error: error => {
-				console.error('Erro na operação do carrinho:', error);
+			error: () => {
 				this._snackBar.open(errorMessage, 'Fechar', {
 					duration: 4000,
 					panelClass: ['error-snackbar'],
@@ -266,7 +269,6 @@ export class ProductsListComponent implements OnInit {
 
 		this._productsService.getProducts(request, true).subscribe({
 			next: (response: PaginatedResponse<GetProductsResponseDto>) => {
-				console.log(response);
 				const currentProducts = this.products();
 				const newProducts = response.data || [];
 
@@ -279,14 +281,12 @@ export class ProductsListComponent implements OnInit {
 				this.totalCount.set(response.totalCount || 0);
 
 				const totalLoaded = this.products().length;
-				console.log(response);
 				const hasMore = totalLoaded < (response.totalCount || 0);
 				this.hasMoreData.set(hasMore);
 
 				this.loading.set(false);
 			},
-			error: error => {
-				console.error('Erro ao carregar produtos:', error);
+			error: () => {
 				this._snackBar.open('Erro ao carregar produtos', 'Fechar', {
 					duration: 3000,
 					panelClass: ['error-snackbar'],
@@ -301,10 +301,11 @@ export class ProductsListComponent implements OnInit {
 			next: (response: GetCategoriesResponse) => {
 				this.categories.set(response.categories);
 			},
-			error: error => {
-				console.error('Erro ao carregar categorias:', error);
-			},
 		});
+	}
+
+	private _closeMenu(): void {
+		this._menuService.closeMenu();
 	}
 
 	private _checkAdminAccess(): void {

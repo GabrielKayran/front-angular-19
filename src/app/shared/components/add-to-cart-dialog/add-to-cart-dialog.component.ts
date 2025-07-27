@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { GetProductsResponseDto } from '@app/clients/products/product.interface';
 import { MatTooltip } from '@angular/material/tooltip';
+import { ImageFallbackDirective } from '@shared/directives/image-fallback.directive';
 
 export interface AddToCartDialogData {
 	product: GetProductsResponseDto;
@@ -31,6 +32,7 @@ export interface AddToCartDialogResult {
 		MatInputModule,
 		FormsModule,
 		MatTooltip,
+		ImageFallbackDirective,
 	],
 	templateUrl: './add-to-cart-dialog.component.html',
 	styleUrl: './add-to-cart-dialog.component.scss',

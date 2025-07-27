@@ -1,9 +1,15 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { finalize, Observable, of, forkJoin } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 import { CartClientService } from '@app/clients/cart/cart-client.service';
 import { GlobalStateService } from '@core/services/global-state.service';
 import { CreateCartRequest, GetCartResponse, CartProduct } from '@app/clients/cart/cart.interface';
+import { ProductsClientService } from '@app/clients/products/products-client.service';
+import { GetProductResponse } from '@app/clients/products/product.interface';
+
+export interface CartProductWithDetails extends CartProduct {
+	product: GetProductResponse;
+}
 
 @Injectable({
 	providedIn: 'root',
@@ -11,11 +17,14 @@ import { CreateCartRequest, GetCartResponse, CartProduct } from '@app/clients/ca
 export class CartService {
 	private _cartClient = inject(CartClientService);
 	private _globalState = inject(GlobalStateService);
+	private _productsClient = inject(ProductsClientService);
 
 	private _currentCart = signal<GetCartResponse | null>(null);
 	private _cartItems = signal<CartProduct[]>([]);
 	private _cartCount = signal(0);
 	private _isLoading = signal(false);
+
+	private _productsCache = new Map<string, GetProductResponse>();
 
 	public readonly currentCart = this._currentCart.asReadonly();
 	public readonly cartItems = this._cartItems.asReadonly();
@@ -26,12 +35,20 @@ export class CartService {
 		this.initializeCart().subscribe();
 	}
 
+	private _resetCartState(): void {
+		this._currentCart.set(null);
+		this._cartItems.set([]);
+		this._cartCount.set(0);
+		this._productsCache.clear();
+	}
+
 	public initializeCart(): Observable<void> {
 		const user = this._globalState.user();
 		if (!user) return of();
 
 		this._isLoading.set(true);
 		return this.checkExistingCart().pipe(
+			finalize(() => this._isLoading.set(false)),
 			tap(cart => {
 				if (cart) {
 					this._currentCart.set(cart);
@@ -39,11 +56,7 @@ export class CartService {
 					this._updateCartCount();
 				}
 			}),
-			catchError(error => {
-				console.error('Erro ao inicializar carrinho:', error);
-				return of(null);
-			}),
-			tap(() => this._isLoading.set(false)),
+			catchError(() => of(null)),
 			map(() => void 0)
 		);
 	}
@@ -73,6 +86,7 @@ export class CartService {
 				products: [{ productId, quantity }],
 			};
 			return this._cartClient.createCart(createRequest).pipe(
+				finalize(() => this._isLoading.set(false)),
 				tap(createdCart => {
 					if (!createdCart) throw new Error('Falha ao criar carrinho');
 					this._currentCart.set(createdCart);
@@ -80,10 +94,8 @@ export class CartService {
 					this._updateCartCount();
 				}),
 				catchError(error => {
-					console.error('Erro ao adicionar produto ao carrinho:', error);
 					throw error;
 				}),
-				tap(() => this._isLoading.set(false)),
 				map(() => void 0)
 			);
 		} else {
@@ -105,6 +117,7 @@ export class CartService {
 			};
 
 			return this._cartClient.updateCart(updateRequest).pipe(
+				finalize(() => this._isLoading.set(false)),
 				tap(updatedCart => {
 					if (!updatedCart) throw new Error('Falha ao atualizar carrinho');
 					this._currentCart.set(updatedCart);
@@ -112,10 +125,8 @@ export class CartService {
 					this._updateCartCount();
 				}),
 				catchError(error => {
-					console.error('Erro ao atualizar carrinho:', error);
 					throw error;
 				}),
-				tap(() => this._isLoading.set(false)),
 				map(() => void 0)
 			);
 		}
@@ -132,34 +143,41 @@ export class CartService {
 		}
 
 		if (newQuantity <= 0) {
-			cart.products = cart.products.filter(p => p.productId !== productId);
+			return this._cartClient.deleteCart(cart.id).pipe(
+				finalize(() => this._isLoading.set(false)),
+				tap(() => this._resetCartState()),
+				catchError(error => {
+					throw error;
+				}),
+				map(() => void 0)
+			);
 		} else {
 			const product = cart.products.find(p => p.productId === productId);
 			if (product) {
 				product.quantity = newQuantity;
 			}
+
+			const updateRequest: CreateCartRequest = {
+				userId: cart.userId,
+				date: cart.date,
+				products: cart.products,
+				cartId: cart.id,
+			};
+
+			return this._cartClient.updateCart(updateRequest).pipe(
+				finalize(() => this._isLoading.set(false)),
+				tap(updatedCart => {
+					if (!updatedCart) throw new Error('Falha ao atualizar carrinho');
+					this._currentCart.set(updatedCart);
+					this._cartItems.set(updatedCart.products);
+					this._updateCartCount();
+				}),
+				catchError(error => {
+					throw error;
+				}),
+				map(() => void 0)
+			);
 		}
-
-		const updateRequest: CreateCartRequest = {
-			userId: cart.userId,
-			date: cart.date,
-			products: cart.products,
-		};
-
-		return this._cartClient.updateCart(updateRequest).pipe(
-			tap(updatedCart => {
-				if (!updatedCart) throw new Error('Falha ao atualizar carrinho');
-				this._currentCart.set(updatedCart);
-				this._cartItems.set(updatedCart.products);
-				this._updateCartCount();
-			}),
-			catchError(error => {
-				console.error('Erro ao atualizar quantidade do produto:', error);
-				throw error;
-			}),
-			tap(() => this._isLoading.set(false)),
-			map(() => void 0)
-		);
 	}
 
 	public removeFromCart(productId: string): Observable<void> {
@@ -173,16 +191,11 @@ export class CartService {
 		this._isLoading.set(true);
 
 		return this._cartClient.deleteCart(cart.id).pipe(
-			tap(() => {
-				this._currentCart.set(null);
-				this._cartItems.set([]);
-				this._cartCount.set(0);
-			}),
+			finalize(() => this._isLoading.set(false)),
+			tap(() => this._resetCartState()),
 			catchError(error => {
-				console.error('Erro ao limpar carrinho:', error);
 				throw error;
 			}),
-			tap(() => this._isLoading.set(false)),
 			map(() => void 0)
 		);
 	}
@@ -206,11 +219,54 @@ export class CartService {
 		this._cartCount.set(totalCount);
 	}
 
-	public refreshCart(): Observable<void> {
-		return this.initializeCart();
-	}
-
 	public isProductInCart(productId: string): boolean {
 		return this.getProductQuantity(productId) > 0;
+	}
+
+	public getCartItemsWithDetails(): Observable<CartProductWithDetails[]> {
+		const cartItems = this._cartItems();
+		if (!cartItems || cartItems.length === 0) {
+			return of([]);
+		}
+
+		const itemsWithDetails: CartProductWithDetails[] = [];
+		const itemsToFetch: CartProduct[] = [];
+
+		cartItems.forEach(item => {
+			const cachedProduct = this._productsCache.get(item.productId);
+			if (cachedProduct) {
+				itemsWithDetails.push({
+					...item,
+					product: cachedProduct,
+				});
+			} else {
+				itemsToFetch.push(item);
+			}
+		});
+
+		if (itemsToFetch.length === 0) {
+			return of(itemsWithDetails);
+		}
+
+		const productRequests = itemsToFetch.map(item =>
+			this._productsClient.getProduct({ id: item.productId }).pipe(
+				map(product => {
+					// Adicionar produto ao cache
+					this._productsCache.set(item.productId, product);
+					return {
+						...item,
+						product,
+					} as CartProductWithDetails;
+				}),
+				catchError(() => of(null))
+			)
+		);
+
+		return forkJoin(productRequests).pipe(
+			map(fetchedResults => {
+				const validFetchedItems = fetchedResults.filter(item => item !== null) as CartProductWithDetails[];
+				return [...itemsWithDetails, ...validFetchedItems];
+			})
+		);
 	}
 }

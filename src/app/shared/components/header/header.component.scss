@@ -1,12 +1,15 @@
+@use '../../../../scss/variables' as vars;
+
 .app-header {
-	background: #e2e8f0;
-	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-	color: #64748b;
+	background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+	border-bottom: 1px solid #cbd5e1;
+	color: #475569;
 	height: 64px;
 	padding: 0 24px;
 	position: sticky;
 	top: 0;
 	z-index: 1000;
+	box-shadow: 0 1px 3px rgba(51, 65, 85, 0.1);
 
 	.header-content {
 		display: flex;
@@ -23,11 +26,12 @@
 
 		.menu-toggle {
 			color: #64748b;
-			transition: all 0.2s ease;
+			transition: all 0.3s ease;
 
 			&:hover {
-				color: #ffffff;
-				background: rgba(255, 255, 255, 0.1);
+				color: white;
+				background: vars.$color-primary !important;
+				transform: scale(1.05);
 			}
 		}
 
@@ -41,42 +45,48 @@
 
 	.header-right {
 		.user-info {
+			height: 48px;
+			border-radius: 10px;
 			display: flex;
 			align-items: center;
 			gap: 8px;
 			padding: 8px 16px;
-			border-radius: 8px;
-			background: rgba(255, 255, 255, 0.1);
-			border: 1px solid rgba(255, 255, 255, 0.2);
-			transition: all 0.2s ease;
+			background: rgba(99, 102, 241, 0.1);
+			border: 1px solid rgba(99, 102, 241, 0.2);
+			transition: all 0.3s ease;
 
 			&:hover {
-				background: rgba(255, 255, 255, 0.15);
-				border-color: rgba(255, 255, 255, 0.3);
+				background: rgba(99, 102, 241, 0.15);
+				border-color: vars.$color-primary;
+				transform: translateY(-1px);
 			}
 
 			.user-icon {
-				color: #64748b;
-				font-size: 1.5rem;
+				color: vars.$color-primary;
 				width: 24px;
 				height: 24px;
 			}
 
 			.user-name {
 				font-weight: 500;
-				color: #64748b;
-				font-size: 0.95rem;
+				color: #475569;
+				font-size: 0.875rem;
+				white-space: nowrap;
 			}
 
 			.user-menu-trigger {
 				mat-icon {
 					color: #64748b;
-					transition: transform 0.2s ease;
+					transition: all 0.3s ease;
 				}
 
-				&:hover mat-icon {
-					transform: rotate(180deg);
-					color: #ffffff;
+				&:hover {
+					background: rgba(99, 102, 241, 0.1);
+
+					mat-icon {
+						transform: rotate(180deg);
+						color: vars.$color-primary;
+					}
 				}
 			}
 		}

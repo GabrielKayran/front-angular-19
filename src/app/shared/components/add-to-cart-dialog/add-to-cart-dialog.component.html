@@ -9,7 +9,11 @@
 	<mat-dialog-content class="dialog-content">
 		<div class="product-info">
 			<div class="product-image">
-				<img [src]="data.product.image" [alt]="data.product.title" />
+				<img 
+					[src]="data.product.image" 
+					[alt]="data.product.title"
+					appImageFallback="assets/images/default.png"
+				/>
 			</div>
 			<div class="product-details">
 				<h3 class="product-title">{{ data.product.title }}</h3>
@@ -39,7 +43,7 @@
 					<mat-icon>remove</mat-icon>
 				</button>
 
-				<mat-form-field appearance="outline">
+				<mat-form-field appearance="outline" class="quantity-input">
 					<input
 						matInput
 						type="number"
@@ -83,7 +87,13 @@
 			Cancelar
 		</button>
 
-		<button mat-raised-button [color]="quantity() === 0 ? 'secondary' : 'primary'" type="button" (click)="onConfirm()">
+		<button
+			mat-raised-button
+			[color]="quantity() === 0 ? 'warn' : 'primary'"
+			[class.remove-button]="quantity() === 0"
+			type="button"
+			(click)="onConfirm()"
+		>
 			<mat-icon>
 				@if (quantity() === 0) {
 					delete

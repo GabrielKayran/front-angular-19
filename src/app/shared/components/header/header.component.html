@@ -4,10 +4,9 @@
 			<button mat-icon-button (click)="toggleMenu()" class="menu-toggle" [matTooltip]="tooltipText">
 				<mat-icon>menu</mat-icon>
 			</button>
-			<span class="app-title">Ambev System</span>
 		</div>
 
-		<div class="header-right d-flex gap-2 align-items-center justify-content-end">
+		<div class="header-right d-flex gap-3 align-items-center justify-content-end">
 			<app-cart-badge></app-cart-badge>
 
 			@if (user()?.username) {

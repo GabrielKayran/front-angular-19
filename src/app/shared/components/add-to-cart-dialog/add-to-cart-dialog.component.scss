@@ -11,14 +11,14 @@
 	background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%);
 	color: white;
 	padding: 1.5rem;
-	
+
 	.dialog-title {
 		margin: 0;
 		font-size: 1.3rem;
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
-		color: white; 
+		color: white;
 	}
 }
 
@@ -87,7 +87,7 @@
 }
 
 .quantity-input {
-	width: 80px;
+	margin-bottom: -20px;
 }
 
 .quantity-input input {
@@ -139,7 +139,7 @@
 		font-size: 0.95rem;
 		font-weight: 500;
 		letter-spacing: 0.02em;
-		
+
 		strong {
 			color: #0f5132;
 			font-weight: 700;
@@ -159,14 +159,14 @@
 	gap: 0.75rem;
 	box-shadow: 0 2px 8px rgba(255, 193, 7, 0.1);
 	transition: all 0.3s ease;
-	
+
 	&:hover {
 		transform: translateY(-1px);
 		box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
 	}
-	
+
 	.warning-icon {
-		color: #856404; 
+		color: #856404;
 		font-size: 1.3rem;
 		border-radius: 50%;
 		padding: 0.4rem;
@@ -174,7 +174,7 @@
 		align-items: center;
 		justify-content: center;
 	}
-	
+
 	span {
 		color: #856404;
 		font-weight: 600;
@@ -187,18 +187,32 @@
 	padding: 1rem 1.5rem 1.5rem;
 	background: #f8f9fa;
 	border-top: 1px solid #dee2e6;
-	
+
 	button {
 		min-width: 120px;
-		height: 44px; 
+		height: 44px;
 		transition: all 0.2s ease;
-		
+
 		&:hover {
 			transform: translateY(-1px);
 		}
-		
+
 		mat-icon {
 			margin-right: 0.5rem;
+		}
+
+		&.remove-button {
+			background-color: #f44336 !important;
+			color: white !important;
+
+			&:hover {
+				background-color: #d32f2f !important;
+				box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3) !important;
+			}
+
+			&:focus {
+				background-color: #d32f2f !important;
+			}
 		}
 	}
 }

@@ -20,7 +20,6 @@ export class DashboardComponent implements OnInit {
 	user = this._globalState.user;
 
 	ngOnInit(): void {
-		console.log(this.user(), 'DashboardComponent ngOnInit');
 		if (!this._globalState.token()) {
 			this._router.navigate(['/login']);
 		}

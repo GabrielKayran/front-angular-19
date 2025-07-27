@@ -4,14 +4,24 @@
 			<div class="d-flex flex-column align-items-center justify-content-center gap-2">
 				@for (menuItem of menuItems; track menuItem.label) {
 					@if (isCollapsed()) {
-						<button mat-icon-button class="icon-button" [matTooltip]="menuItem.label" (click)="menuItem.action()">
+						<button 
+							mat-icon-button 
+							class="icon-button" 
+							[class.active]="isRouteActive(menuItem.route)"
+							[matTooltip]="menuItem.label" 
+							(click)="menuItem.action()">
 							<mat-icon>{{ menuItem.icon }}</mat-icon>
 						</button>
 					} @else {
-						<button mat-fab extended class="menu-item" (click)="menuItem.action()">
+						<button 
+							mat-fab 
+							extended 
+							class="menu-item" 
+							[class.active]="isRouteActive(menuItem.route)"
+							(click)="menuItem.action()">
 							<mat-icon>{{ menuItem.icon }}</mat-icon>
 							<span class="truncate">{{ menuItem.label }}</span>
-						</button>
+						</button> 
 					}
 				}
 			</div>

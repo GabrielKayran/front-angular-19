@@ -6,6 +6,7 @@ export interface CartProduct {
 }
 
 export interface CreateCartRequest {
+	cartId?: string;
 	userId: string;
 	date: string;
 	products: CartProduct[];

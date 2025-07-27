@@ -89,9 +89,6 @@ export class LoginComponent {
 
 					this._router.navigate(['/dashboard']);
 				},
-				error: error => {
-					console.error('Erro no login:', error);
-				},
 			});
 	}
 }

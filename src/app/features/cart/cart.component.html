@@ -12,11 +12,10 @@
 
 		<mat-card-content>
 			@if (isLoading()) {
-				<div class="loading-state">
+				<div class="loading-state d-flex justify-content-center align-items-center">
 					<mat-spinner diameter="40"></mat-spinner>
-					<p>Carregando carrinho...</p>
 				</div>
-			} @else if (cartItems().length === 0) {
+			} @else if (cartItemsWithDetails().length === 0) {
 				<div class="empty-cart">
 					<mat-icon>shopping_cart</mat-icon>
 					<h3>Seu carrinho está vazio</h3>
@@ -27,17 +26,23 @@
 					</button>
 				</div>
 			} @else {
-				<mat-list>
-					@for (item of cartItems(); track item.productId) {
-						<mat-list-item class="cart-item">
+				<div class="cart-items my-3">
+					@for (item of cartItemsWithDetails(); track item.productId) {
+						<mat-card class="cart-item-card">
 							<div class="item-content">
 								<div class="item-image">
-									<img src="https://via.placeholder.com/80" alt="Produto" />
+									<img
+										width="80"
+										height="80"
+										[ngSrc]="item.product.image"
+										[alt]="item.product.title"
+										appImageFallback="assets/images/default.png"
+									/>
 								</div>
 								<div class="item-details">
-									<h4>Produto ID: {{ item.productId }}</h4>
-									<p class="item-price">Carregando...</p>
-									<p class="item-category">-</p>
+									<h4>{{ item.product.title }}</h4>
+									<p class="item-price">R$ {{ item.product.price | number: '1.2-2' }}</p>
+									<p class="item-category">{{ item.product.category }}</p>
 								</div>
 								<div class="item-controls">
 									<div class="quantity-controls">
@@ -61,24 +66,18 @@
 										</button>
 									</div>
 									<div class="item-total">
-										<strong>Calculando...</strong>
+										<strong>R$ {{ item.product.price * item.quantity | number: '1.2-2' }}</strong>
 									</div>
 									<div class="item-actions">
-										<button
-											mat-icon-button
-											color="warn"
-											(click)="removeItem(item.productId)"
-											matTooltip="Remover item"
-										>
+										<button mat-icon-button color="warn" (click)="removeItem(item.productId)" matTooltip="Remover item">
 											<mat-icon>delete</mat-icon>
 										</button>
 									</div>
 								</div>
 							</div>
-						</mat-list-item>
-						<mat-divider></mat-divider>
+						</mat-card>
 					}
-				</mat-list>
+				</div>
 
 				<div class="cart-summary">
 					<div class="summary-row">
@@ -92,12 +91,12 @@
 				</div>
 
 				<div class="cart-actions">
-					<button mat-button color="warn" (click)="clearCart()">
+					<button mat-button color="warn" (click)="clearCart()" class="w-100">
 						<mat-icon>clear</mat-icon>
 						Limpar Carrinho
 					</button>
 
-					<button mat-raised-button color="primary" (click)="checkout()">
+					<button mat-raised-button color="primary" (click)="checkout()" class="w-100">
 						<mat-icon>payment</mat-icon>
 						Finalizar Compra
 					</button>

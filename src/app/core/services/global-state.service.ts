@@ -31,8 +31,6 @@ export class GlobalStateService {
 		const decodedToken = this._decodedToken(this.token());
 		if (!decodedToken) return null;
 
-		console.log(decodedToken);
-
 		return {
 			id: decodedToken.nameid,
 			username: decodedToken.unique_name,

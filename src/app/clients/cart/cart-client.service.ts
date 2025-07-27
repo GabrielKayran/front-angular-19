@@ -54,7 +54,7 @@ export class CartClientService {
 
 	updateCart(request: CreateCartRequest): Observable<GetCartResponse> {
 		return this._http
-			.put<ApiResponseWithData<GetCartResponse>>(`${this._baseUrl}/${request.userId}`, request)
+			.put<ApiResponseWithData<GetCartResponse>>(`${this._baseUrl}/${request.cartId}`, request)
 			.pipe(map(BaseResponse.extractResult));
 	}
 

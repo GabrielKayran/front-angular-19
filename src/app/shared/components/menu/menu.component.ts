@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 export interface MenuItem {
 	label: string;
 	icon: string;
+	route: string;
 	action: () => void;
 }
 
@@ -37,11 +38,13 @@ export class MenuComponent implements OnInit {
 				{
 					label: 'Produtos',
 					icon: 'inventory_2',
+					route: '/admin/products',
 					action: () => this._router.navigate(['/admin/products']),
 				},
 				{
 					label: 'Cadastrar Produto',
 					icon: 'add_circle',
+					route: '/admin/products/create',
 					action: () => this._router.navigate(['/admin/products/create']),
 				},
 			];
@@ -50,14 +53,20 @@ export class MenuComponent implements OnInit {
 				{
 					label: 'Carrinho',
 					icon: 'shopping_cart',
+					route: '/cart',
 					action: () => this._router.navigate(['/cart']),
 				},
 				{
 					label: 'Lista de Produtos',
 					icon: 'list',
+					route: '/products',
 					action: () => this._router.navigate(['/products']),
 				},
 			];
 		}
+	}
+
+	isRouteActive(route: string): boolean {
+		return this._router.url === route || this._router.url.startsWith(route + '/');
 	}
 }

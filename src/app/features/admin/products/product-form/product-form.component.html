@@ -72,7 +72,11 @@
 
 					@if (isImageValid()) {
 						<div class="image-preview">
-							<img [src]="image?.value" [alt]="title?.value" />
+							<img 
+								[src]="image?.value" 
+								[alt]="title?.value"
+								appImageFallback="assets/images/default.png"
+							/>
 						</div>
 					}
 

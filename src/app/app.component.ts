@@ -2,6 +2,7 @@ import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { LoadingComponent } from '@shared/components/loading/loading.component';
 import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 import { GlobalStateService } from '@core/services/global-state.service';
+import { MenuService } from '@core/services/menu.service';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
@@ -33,20 +34,23 @@ export class AppComponent implements OnInit {
 		this._verifyMobile();
 	}
 	public hasUser = signal(false);
-	public isCollapsed = signal(false);
 	public isMobile = signal(false);
 	public showSidenav = signal(true);
 
 	private readonly _globalStateService = inject(GlobalStateService);
+	private readonly _menuService = inject(MenuService);
 	private _router = inject(Router);
+
+	public readonly isMenuOpen = this._menuService.isMenuOpen;
 
 	ngOnInit(): void {
 		this._getSessionToken();
 		this._setupRouteListener();
 		this._checkAuthRoute(this._router.url);
 	}
-	toggleCollapse() {
-		this.isCollapsed.set(!this.isCollapsed());
+
+	toggleMenu(): void {
+		this._menuService.toggleMenu();
 	}
 
 	logout(): void {

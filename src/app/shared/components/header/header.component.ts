@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { GlobalStateService } from '@core/services/global-state.service';
+import { MenuService } from '@core/services/menu.service';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CartBadgeComponent } from '@shared/components/cart-badge/cart-badge.component';
 
@@ -29,8 +30,12 @@ export class HeaderComponent {
 
 	isCollapsed = input<boolean | undefined>(false);
 	private _globalState = inject(GlobalStateService);
+	private _menuService = inject(MenuService);
 
 	user = this._globalState.user;
+
+	// Expor o estado do menu do MenuService
+	public readonly isMenuOpen = this._menuService.isMenuOpen;
 
 	public get tooltipText(): string {
 		return this.isCollapsed() ? 'Abrir Menu' : 'Fechar Menu';
