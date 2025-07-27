@@ -1,0 +1,105 @@
+<div class="add-to-cart-dialog">
+	<div class="dialog-header">
+		<h2 mat-dialog-title class="dialog-title">
+			<mat-icon class="title-icon">shopping_cart</mat-icon>
+			{{ currentQuantityInCart() > 0 ? 'Gerenciar no Carrinho' : 'Adicionar ao Carrinho' }}
+		</h2>
+	</div>
+
+	<mat-dialog-content class="dialog-content">
+		<div class="product-info">
+			<div class="product-image">
+				<img [src]="data.product.image" [alt]="data.product.title" />
+			</div>
+			<div class="product-details">
+				<h3 class="product-title">{{ data.product.title }}</h3>
+				<p class="product-price">{{ data.product.price | currency }}</p>
+				<p class="product-category">{{ data.product.category }}</p>
+			</div>
+		</div>
+
+		@if (currentQuantityInCart() > 0) {
+			<div class="current-quantity-info">
+				<mat-icon class="info-icon">info</mat-icon>
+				<span
+					>Atualmente no carrinho: <strong>{{ currentQuantityInCart() }}</strong></span
+				>
+			</div>
+		}
+
+		<div class="quantity-section">
+			<div class="quantity-controls">
+				<button
+					mat-icon-button
+					type="button"
+					(click)="decrementQuantity()"
+					[disabled]="currentQuantityInCart() > 0 ? quantity() <= 0 : quantity() <= 1"
+					class="quantity-btn"
+				>
+					<mat-icon>remove</mat-icon>
+				</button>
+
+				<mat-form-field appearance="outline">
+					<input
+						matInput
+						type="number"
+						[ngModel]="quantity()"
+						(ngModelChange)="onQuantityChange($event)"
+						min="1"
+						max="99"
+					/>
+				</mat-form-field>
+
+				<button
+					mat-icon-button
+					color="primary"
+					(click)="incrementQuantity()"
+					[disabled]="quantity() >= 99"
+					matTooltip="Aumentar quantidade"
+				>
+					<mat-icon>add</mat-icon>
+				</button>
+			</div>
+
+			<div class="total-section">
+				@if (quantity() > 0) {
+					<div class="total-price">
+						<span class="total-label">Total:</span>
+						<span class="total-value">{{ getTotalPrice() | currency: 'BRL' : 'symbol' : '1.2-2' }}</span>
+					</div>
+				} @else {
+					<div class="remove-warning">
+						<mat-icon class="warning-icon">warning</mat-icon>
+						<span>O produto será removido do carrinho</span>
+					</div>
+				}
+			</div>
+		</div>
+	</mat-dialog-content>
+
+	<mat-dialog-actions class="dialog-actions" [align]="'end'">
+		<button mat-button type="button" (click)="onCancel()">
+			<mat-icon>close</mat-icon>
+			Cancelar
+		</button>
+
+		<button mat-raised-button [color]="quantity() === 0 ? 'secondary' : 'primary'" type="button" (click)="onConfirm()">
+			<mat-icon>
+				@if (quantity() === 0) {
+					delete
+				} @else if (currentQuantityInCart() > 0) {
+					update
+				} @else {
+					add_shopping_cart
+				}
+			</mat-icon>
+			@if (quantity() === 0) {
+				Remover do Carrinho
+			} @else if (currentQuantityInCart() > 0) {
+				Atualizar ({{ quantity() }})
+			} @else {
+				Adicionar ({{ quantity() }})
+			}
+		</button>
+	</mat-dialog-actions>
+</div>

@@ -1,4 +1,4 @@
-@use '../../../../../scss/variables' as vars;
+@use '../../../../scss/variables' as vars;
 @use 'sass:color';
 
 .products-container {
@@ -102,6 +102,9 @@
 				.product-category-chip {
 					.category-chip {
 						transition: all 0.2s ease;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
 
 						&:hover {
 							transform: translateY(-1px);
@@ -226,10 +229,6 @@
 			flex-direction: column;
 			gap: vars.$spacing-md;
 			align-items: stretch !important;
-
-			.header-left {
-				justify-content: center;
-			}
 		}
 
 		.table-container {
@@ -263,4 +262,10 @@
 		color: vars.$color-secondary;
 		font-size: 0.875rem;
 	}
+}
+
+.mdc-button__label {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }

@@ -70,10 +70,17 @@ export class ProductsClientService {
 		return this._http.get<PaginatedResponse<GetProductsResponseDto>>(`${this._baseUrl}`, { params });
 	}
 
-	updateProduct(request: UpdateProductRequest): Observable<UpdateProductResponse> {
+	updateProduct(request: UpdateProductRequest, skipLoading?: boolean): Observable<UpdateProductResponse> {
 		const { id, ...updateData } = request;
+
+		let params = new HttpParams();
+
+		if (skipLoading) {
+			params = params.set(BYPASS_LOADING, 'true');
+		}
+
 		return this._http
-			.put<ApiResponseWithData<UpdateProductResponse>>(`${this._baseUrl}/${id}`, updateData)
+			.put<ApiResponseWithData<UpdateProductResponse>>(`${this._baseUrl}/${id}`, updateData || {}, { params })
 			.pipe(map(BaseResponse.extractResult));
 	}
 

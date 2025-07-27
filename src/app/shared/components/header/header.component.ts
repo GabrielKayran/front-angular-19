@@ -6,11 +6,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { GlobalStateService } from '@core/services/global-state.service';
 import { MatTooltip } from '@angular/material/tooltip';
+import { CartBadgeComponent } from '@shared/components/cart-badge/cart-badge.component';
 
 @Component({
 	selector: 'app-header',
 	standalone: true,
-	imports: [CommonModule, MatToolbarModule, MatIconModule, MatButtonModule, MatMenuModule, MatTooltip],
+	imports: [
+		CommonModule,
+		MatToolbarModule,
+		MatIconModule,
+		MatButtonModule,
+		MatMenuModule,
+		MatTooltip,
+		CartBadgeComponent,
+	],
 	templateUrl: './header.component.html',
 	styleUrls: ['./header.component.scss'],
 })

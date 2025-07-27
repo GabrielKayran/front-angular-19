@@ -1,0 +1,11 @@
+.cart-button {
+	position: relative;
+
+	mat-icon {
+		color: #1976d2;
+	}
+
+	&:hover mat-icon {
+		color: #1565c0;
+	}
+}

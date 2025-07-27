@@ -14,8 +14,17 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
+import {
+	AddToCartDialogComponent,
+	AddToCartDialogData,
+	AddToCartDialogResult,
+} from '@shared/components/add-to-cart-dialog/add-to-cart-dialog.component';
+import { CartService } from '@core/services/cart.service';
 
 import { ProductsClientService } from '@app/clients/products/products-client.service';
 import {
@@ -52,6 +61,7 @@ interface FilterFormControls {
 		MatProgressSpinnerModule,
 		MatChipsModule,
 		MatTooltipModule,
+		MatBadgeModule,
 		ReactiveFormsModule,
 		NgOptimizedImage,
 	],
@@ -64,6 +74,8 @@ export class ProductsListComponent implements OnInit {
 	private _router = inject(Router);
 	private _snackBar = inject(MatSnackBar);
 	private _fb = inject(FormBuilder);
+	private _dialog = inject(MatDialog);
+	private _cartService = inject(CartService);
 
 	products = signal<GetProductsResponseDto[]>([]);
 	categories = signal<string[]>([]);
@@ -73,6 +85,12 @@ export class ProductsListComponent implements OnInit {
 	loading = signal(false);
 	hasMoreData = signal(true);
 	scrollDistance = signal(2);
+
+	public readonly isCartLoading = this._cartService.isLoading;
+
+	get isAdminMode(): boolean {
+		return this._router.url.includes('/admin');
+	}
 
 	filterForm: FormGroup<FilterFormControls> = this._fb.group({
 		title: this._fb.control('', { nonNullable: true }),
@@ -90,6 +108,30 @@ export class ProductsListComponent implements OnInit {
 	public get isFilterFormEmpty(): boolean {
 		const { title, category, minPrice, maxPrice } = this.filterForm.value;
 		return !title && !category && !minPrice && !maxPrice;
+	}
+
+	public get headerConfig() {
+		return {
+			title: this.isAdminMode ? 'Gerenciar Produtos' : 'Catálogo de Produtos',
+			icon: this.isAdminMode ? 'inventory_2' : 'store',
+		};
+	}
+
+	public get emptyStateConfig() {
+		return {
+			title: this.isAdminMode ? 'Nenhum produto encontrado' : 'Nenhum produto disponível',
+			description: this.isAdminMode
+				? 'Não há produtos cadastrados ou que atendam aos filtros aplicados.'
+				: 'Não há produtos disponíveis no momento ou que atendam aos filtros aplicados.',
+		};
+	}
+
+	public getProductQuantity(productId: string): number {
+		return this._cartService.getProductQuantity(productId);
+	}
+
+	public isProductInCart(productId: string): boolean {
+		return this._cartService.isProductInCart(productId);
 	}
 
 	public onScrollDown(): void {
@@ -122,6 +164,73 @@ export class ProductsListComponent implements OnInit {
 				},
 			});
 		}
+	}
+
+	public addToCart(product: GetProductsResponseDto): void {
+		const currentQuantity = this.getProductQuantity(product.id);
+		const dialogData: AddToCartDialogData = {
+			product,
+			currentQuantity,
+		};
+
+		const dialogRef = this._dialog.open(AddToCartDialogComponent, {
+			width: '500px',
+			maxWidth: '90vw',
+			data: dialogData,
+			disableClose: false,
+			autoFocus: true,
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				this._handleCartAction(product, result);
+			}
+		});
+	}
+
+	private _handleCartAction(product: GetProductsResponseDto, result: AddToCartDialogResult): void {
+		let serviceCall;
+		let successMessage = '';
+		let errorMessage = '';
+
+		switch (result.action) {
+			case 'add':
+				serviceCall = this._cartService.addToCart(product.id, result.quantity);
+				successMessage = `${product.title} adicionado ao carrinho! (${result.quantity} ${result.quantity === 1 ? 'item' : 'itens'})`;
+				errorMessage = 'Erro ao adicionar produto ao carrinho. Tente novamente.';
+				break;
+
+			case 'update':
+				serviceCall = this._cartService.updateProductQuantity(product.id, result.quantity);
+				successMessage = `Quantidade de ${product.title} atualizada! (${result.quantity} ${result.quantity === 1 ? 'item' : 'itens'})`;
+				errorMessage = 'Erro ao atualizar quantidade. Tente novamente.';
+				break;
+
+			case 'remove':
+				serviceCall = this._cartService.removeFromCart(product.id);
+				successMessage = `${product.title} removido do carrinho!`;
+				errorMessage = 'Erro ao remover produto do carrinho. Tente novamente.';
+				break;
+
+			default:
+				return;
+		}
+
+		serviceCall.subscribe({
+			next: () => {
+				this._snackBar.open(successMessage, 'Fechar', {
+					duration: 4000,
+					panelClass: ['success-snackbar'],
+				});
+			},
+			error: error => {
+				console.error('Erro na operação do carrinho:', error);
+				this._snackBar.open(errorMessage, 'Fechar', {
+					duration: 4000,
+					panelClass: ['error-snackbar'],
+				});
+			},
+		});
 	}
 
 	public onSearch(): void {
@@ -199,13 +308,18 @@ export class ProductsListComponent implements OnInit {
 	}
 
 	private _checkAdminAccess(): void {
-		const user = this._globalState.user();
-		if (!user || user.role !== 'Admin') {
-			this._router.navigate(['/dashboard']);
-			this._snackBar.open('Acesso negado. Apenas administradores podem acessar esta página.', 'Fechar', {
-				duration: 5000,
-				panelClass: ['error-snackbar'],
-			});
+		const currentUrl = this._router.url;
+		const isAdminRoute = currentUrl.includes('/admin');
+		if (isAdminRoute) {
+			const user = this._globalState.user();
+			if (!user || user.role !== 'Admin') {
+				this._router.navigate(['/products']);
+				this._snackBar.open('Acesso negado. Apenas administradores podem acessar esta página.', 'Fechar', {
+					duration: 5000,
+					panelClass: ['error-snackbar'],
+				});
+				return;
+			}
 		}
 	}
 }

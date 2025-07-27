@@ -6,7 +6,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { NgClass } from '@angular/common';
-import { MenuComponent } from '@app/features/menu/menu.component';
+import { MenuComponent } from '@shared/components/menu/menu.component';
 import { HeaderComponent } from '@shared/components/header/header.component';
 import { filter } from 'rxjs/operators';
 

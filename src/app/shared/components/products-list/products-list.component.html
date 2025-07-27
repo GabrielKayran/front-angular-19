@@ -65,9 +65,9 @@
 	<mat-card class="products-card my-4">
 		<mat-card-header class="mb-3">
 			<mat-card-title class="products-header">
-				<div class="header-left">
-					<mat-icon>inventory_2</mat-icon>
-					<span class="me-2">Gerenciar Produtos</span>
+				<div class="d-flex align-items-center">
+					<mat-icon>{{ headerConfig.icon }}</mat-icon>
+					<span class="mx-2">{{ headerConfig.title }}</span>
 					<span class="product-count">({{ totalCount() }} produtos)</span>
 				</div>
 			</mat-card-title>
@@ -76,9 +76,9 @@
 		<mat-card-content>
 			@if (!products() || products().length === 0) {
 				<div class="empty-state">
-					<mat-icon>inventory_2</mat-icon>
-					<h3>Nenhum produto encontrado</h3>
-					<p>Não há produtos cadastrados ou que atendam aos filtros aplicados.</p>
+					<mat-icon>{{ headerConfig.icon }}</mat-icon>
+					<h3>{{ emptyStateConfig.title }}</h3>
+					<p>{{ emptyStateConfig.description }}</p>
 				</div>
 			} @else {
 				<div
@@ -108,12 +108,36 @@
 									<h3 class="product-title">{{ product.title }}</h3>
 								</div>
 								<div class="product-actions">
-									<button mat-icon-button color="primary" (click)="editProduct(product)" matTooltip="Editar produto">
-										<mat-icon>edit</mat-icon>
-									</button>
-									<button mat-icon-button color="warn" (click)="deleteProduct(product)" matTooltip="Excluir produto">
-										<mat-icon>delete</mat-icon>
-									</button>
+									@if (isAdminMode) {
+										<button mat-icon-button color="primary" (click)="editProduct(product)" matTooltip="Editar produto">
+											<mat-icon>edit</mat-icon>
+										</button>
+										<button mat-icon-button color="warn" (click)="deleteProduct(product)" matTooltip="Excluir produto">
+											<mat-icon>delete</mat-icon>
+										</button>
+									} @else {
+										<button
+											mat-raised-button
+											color="primary"
+											(click)="addToCart(product)"
+											[matBadge]="getProductQuantity(product.id) > 0 ? getProductQuantity(product.id) : null"
+											matBadgeColor="accent"
+											matBadgePosition="above after"
+											matTooltip="{{
+												isProductInCart(product.id) ? 'Adicionar mais ao carrinho' : 'Adicionar ao carrinho'
+											}}"
+											[disabled]="isCartLoading()"
+										>
+											@if (isCartLoading()) {
+												<mat-spinner diameter="20"></mat-spinner>
+											} @else {
+												<span class="d-flex align-items-center gap-1">
+													<mat-icon>add_shopping_cart</mat-icon>
+													{{ isProductInCart(product.id) ? 'Adicionar +' : 'Adicionar' }}
+												</span>
+											}
+										</button>
+									}
 								</div>
 							</div>
 

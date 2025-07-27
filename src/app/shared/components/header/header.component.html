@@ -7,7 +7,9 @@
 			<span class="app-title">Ambev System</span>
 		</div>
 
-		<div class="header-right">
+		<div class="header-right d-flex gap-2 align-items-center justify-content-end">
+			<app-cart-badge></app-cart-badge>
+
 			@if (user()?.username) {
 				<div class="user-info">
 					<mat-icon class="user-icon">account_circle</mat-icon>
