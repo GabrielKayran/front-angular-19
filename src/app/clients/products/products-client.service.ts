@@ -15,6 +15,7 @@ import {
 import { map, Observable } from 'rxjs';
 import { ApiResponseWithData, PaginatedResponse } from '@shared/interfaces';
 import { BaseResponse } from '@core/class/base-response/base-response';
+import { BYPASS_LOADING } from '@shared/components/loading/interceptors/loading.interceptor';
 
 @Injectable({
 	providedIn: 'root',
@@ -24,21 +25,28 @@ export class ProductsClientService {
 
 	private _http = inject(HttpClient);
 
-	// CREATE
 	createProduct(request: CreateProductRequest): Observable<CreateProductResponse> {
 		return this._http
 			.post<ApiResponseWithData<CreateProductResponse>>(`${this._baseUrl}`, request)
 			.pipe(map(BaseResponse.extractResult));
 	}
 
-	// READ - Get single product
-	getProduct(request: GetProductRequest): Observable<GetProductResponse> {
+	getProduct(request: GetProductRequest, skipLoading?: boolean): Observable<GetProductResponse> {
+		let params = new HttpParams();
+
+		if (skipLoading) {
+			params = params.set(BYPASS_LOADING, 'true');
+		}
+
 		return this._http
-			.get<ApiResponseWithData<GetProductResponse>>(`${this._baseUrl}/${request.id}`)
+			.get<ApiResponseWithData<GetProductResponse>>(`${this._baseUrl}/${request.id}`, { params })
 			.pipe(map(BaseResponse.extractResult));
 	}
 
-	getProducts(request: GetProductsRequest): Observable<PaginatedResponse<GetProductsResponseDto>> {
+	getProducts(
+		request: GetProductsRequest,
+		skipLoading?: boolean
+	): Observable<PaginatedResponse<GetProductsResponseDto>> {
 		let params = new HttpParams()
 			.set('page', (request.page || 1).toString())
 			.set('pageSize', (request.pageSize || 10).toString());
@@ -55,11 +63,13 @@ export class ProductsClientService {
 		if (request.maxPrice) {
 			params = params.set('maxPrice', request.maxPrice.toString());
 		}
+		if (skipLoading) {
+			params = params.set(BYPASS_LOADING, 'true');
+		}
 
 		return this._http.get<PaginatedResponse<GetProductsResponseDto>>(`${this._baseUrl}`, { params });
 	}
 
-	// UPDATE
 	updateProduct(request: UpdateProductRequest): Observable<UpdateProductResponse> {
 		const { id, ...updateData } = request;
 		return this._http
@@ -67,12 +77,10 @@ export class ProductsClientService {
 			.pipe(map(BaseResponse.extractResult));
 	}
 
-	// DELETE
 	deleteProduct(id: string): Observable<void> {
 		return this._http.delete<void>(`${this._baseUrl}/${id}`);
 	}
 
-	// Get categories for dropdown
 	getCategories(): Observable<GetCategoriesResponse> {
 		return this._http
 			.get<ApiResponseWithData<GetCategoriesResponse>>(`${this._baseUrl}/categories`)

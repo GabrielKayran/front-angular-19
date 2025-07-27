@@ -43,8 +43,8 @@ export class AppComponent implements OnInit {
 	ngOnInit(): void {
 		this._getSessionToken();
 		this._setupRouteListener();
+		this._checkAuthRoute(this._router.url);
 	}
-
 	toggleCollapse() {
 		this.isCollapsed.set(!this.isCollapsed());
 	}
@@ -59,17 +59,19 @@ export class AppComponent implements OnInit {
 		this.isMobile.set(window.innerWidth <= 768);
 	}
 
+	private _checkAuthRoute(url: string): void {
+		const authRoutes = ['/login', '/register'];
+		const isAuthRoute = authRoutes.includes(url);
+		this.showSidenav.set(!isAuthRoute);
+	}
+
 	private _setupRouteListener(): void {
 		this._router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-			const authRoutes = ['/login', '/register'];
-			const isAuthRoute = authRoutes.some(route => event.url.includes(route));
-			this.showSidenav.set(!isAuthRoute);
+			this._checkAuthRoute(event.urlAfterRedirects);
 		});
 	}
 
 	private _getSessionToken() {
-
 		this.hasUser.set(!!this._globalStateService.token());
 	}
 }
- 

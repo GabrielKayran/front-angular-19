@@ -1,9 +1,6 @@
 <div class="product-form-container">
 	<div class="header-section">
 		<h1>{{ getFormTitle() }}</h1>
-		<button mat-icon-button (click)="cancel()" class="close-btn">
-			<mat-icon>close</mat-icon>
-		</button>
 	</div>
 
 	<div class="form-section">
@@ -13,28 +10,34 @@
 					<mat-form-field appearance="outline">
 						<mat-label>Nome do Produto</mat-label>
 						<input matInput formControlName="title" />
-						<mat-error *ngIf="title?.invalid && title?.touched">
-							{{ getFieldError('title') }}
-						</mat-error>
+						@if (title?.invalid && title?.touched) {
+							<mat-error>
+								{{ getFieldError('title') }}
+							</mat-error>
+						}
 					</mat-form-field>
 
 					<mat-form-field appearance="outline">
 						<mat-label>Descrição</mat-label>
 						<textarea matInput formControlName="description" rows="3"></textarea>
-						<mat-error *ngIf="description?.invalid && description?.touched">
-							{{ getFieldError('description') }}
-						</mat-error>
+						@if (description?.invalid && description?.touched) {
+							<mat-error>
+								{{ getFieldError('description') }}
+							</mat-error>
+						}
 					</mat-form-field>
 
 					<div class="row">
 						<div class="col-12 col-md-6">
 							<mat-form-field appearance="outline">
 								<mat-label>Preço</mat-label>
-								<input matInput type="number" formControlName="price" step="0.01" min="0" />
-								<span matPrefix>R$ </span>
-								<mat-error *ngIf="price?.invalid && price?.touched">
-									{{ getFieldError('price') }}
-								</mat-error>
+								<input matInput type="number" formControlName="price" min="0" />
+
+								@if (price?.invalid && price?.touched) {
+									<mat-error>
+										{{ getFieldError('price') }}
+									</mat-error>
+								}
 							</mat-form-field>
 						</div>
 
@@ -42,13 +45,17 @@
 							<mat-form-field appearance="outline">
 								<mat-label>Categoria</mat-label>
 								<mat-select formControlName="category">
-									<mat-option *ngFor="let category of categories()" [value]="category">
-										{{ category }}
-									</mat-option>
+									@for (category of categories(); track category) {
+										<mat-option [value]="category">
+											{{ category }}
+										</mat-option>
+									}
 								</mat-select>
-								<mat-error *ngIf="category?.invalid && category?.touched">
-									{{ getFieldError('category') }}
-								</mat-error>
+								@if (category?.invalid && category?.touched) {
+									<mat-error>
+										{{ getFieldError('category') }}
+									</mat-error>
+								}
 							</mat-form-field>
 						</div>
 					</div>
@@ -56,9 +63,11 @@
 					<mat-form-field appearance="outline">
 						<mat-label>URL da Imagem</mat-label>
 						<input matInput formControlName="image" />
-						<mat-error *ngIf="image?.invalid && image?.touched">
-							{{ getFieldError('image') }}
-						</mat-error>
+						@if (image?.invalid && image?.touched) {
+							<mat-error>
+								{{ getFieldError('image') }}
+							</mat-error>
+						}
 					</mat-form-field>
 
 					@if (isImageValid()) {
@@ -73,10 +82,20 @@
 							<div class="col-12 col-md-6">
 								<mat-form-field appearance="outline">
 									<mat-label>Nota (0-5)</mat-label>
-									<input matInput type="number" formControlName="ratingRate" step="0.1" min="0" max="5" placeholder="Ex: 4.2" />
-									<mat-error *ngIf="ratingRate?.invalid && ratingRate?.touched">
-										{{ getFieldError('ratingRate') }}
-									</mat-error>
+									<input
+										matInput
+										type="number"
+										formControlName="ratingRate"
+										step="0.1"
+										min="0"
+										max="5"
+										placeholder="Ex: 4.2"
+									/>
+									@if (ratingRate?.invalid && ratingRate?.touched) {
+										<mat-error>
+											{{ getFieldError('ratingRate') }}
+										</mat-error>
+									}
 								</mat-form-field>
 							</div>
 
@@ -85,17 +104,24 @@
 									<mat-label>Número de Avaliações</mat-label>
 									<input matInput type="number" formControlName="ratingCount" min="0" placeholder="Ex: 156" />
 									<mat-hint>Quantas pessoas avaliaram este produto</mat-hint>
-									<mat-error *ngIf="ratingCount?.invalid && ratingCount?.touched">
-										{{ getFieldError('ratingCount') }}
-									</mat-error>
+									@if (ratingCount?.invalid && ratingCount?.touched) {
+										<mat-error>
+											{{ getFieldError('ratingCount') }}
+										</mat-error>
+									}
 								</mat-form-field>
 							</div>
 						</div>
 					</div>
 
 					<div class="form-actions">
-						<button mat-button type="button" (click)="cancel()" [disabled]="saving()">Cancelar</button>
-						<button mat-raised-button color="primary" type="submit" [disabled]="saving() || productForm.invalid">
+						<button
+							mat-raised-button
+							color="primary"
+							type="submit"
+							[disabled]="saving() || productForm.invalid"
+							class="w-100"
+						>
 							@if (saving()) {
 								<mat-spinner diameter="20"></mat-spinner>
 							} @else {

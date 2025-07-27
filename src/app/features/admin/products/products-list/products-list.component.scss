@@ -6,6 +6,12 @@
 	max-width: 1400px;
 	margin: 0 auto;
 
+	.filter-card {
+		margin-bottom: vars.$spacing-lg;
+		border-radius: vars.$border-radius-lg;
+		box-shadow: vars.$elevation-2;
+	}
+
 	.filters-section {
 		margin-bottom: vars.$spacing-lg;
 
@@ -192,8 +198,24 @@
 		background: vars.$color-surface-variant;
 	}
 }
+
+.actions {
+	button {
+		margin-right: 12px;
+	}
+}
+
 .clear-btn {
-	margin-right: 12px;
+	background-color: vars.$color-error !important;
+	color: white !important;
+	border: none;
+
+	&:disabled {
+		cursor: default;
+		pointer-events: none;
+		color: rgba(26, 28, 30, 0.38) !important;
+		background-color: rgba(26, 28, 30, 0.12) !important;
+	}
 }
 
 @media (max-width: 768px) {

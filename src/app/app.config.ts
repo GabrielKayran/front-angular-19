@@ -5,6 +5,10 @@ import { loadingInterceptor } from '@shared/components/loading/interceptors/load
 import { provideRouter } from '@angular/router';
 import { routes } from '@app/app.routes';
 import { provideNgxMask } from 'ngx-mask';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+
+registerLocaleData(localePt);
 
 export const appConfig: ApplicationConfig = {
 	providers: [

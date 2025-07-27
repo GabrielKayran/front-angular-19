@@ -1,7 +1,9 @@
 .product-form-container {
-	padding: 2rem;
 	max-width: 600px;
 	margin: 0 auto;
+	padding: 2rem 1rem;
+	overflow-y: auto; 
+	box-sizing: border-box;
 
 	.header-section {
 		display: flex;
@@ -97,7 +99,6 @@
 	}
 }
 
-// Responsividade
 @media (max-width: 768px) {
 	.product-form-container {
 		padding: 1rem;

@@ -6,7 +6,6 @@
 					<mat-form-field appearance="outline" class="col-12 col-md-6">
 						<mat-label>Nome do Produto</mat-label>
 						<input matInput formControlName="title" placeholder="Digite o nome do produto" />
-						<mat-icon matSuffix>search</mat-icon>
 					</mat-form-field>
 
 					<mat-form-field appearance="outline" class="col-12 col-md-6">
@@ -20,28 +19,43 @@
 					</mat-form-field>
 				</div>
 
-				<div class="row d-flex justify-content-end">
+				<div class="row">
 					<mat-form-field appearance="outline" class="col-12 col-md-6">
 						<mat-label>Preço Mínimo</mat-label>
 						<input matInput type="number" formControlName="minPrice" placeholder="0,00" />
-						<span matPrefix>R$ </span>
 					</mat-form-field>
 
 					<mat-form-field appearance="outline" class="col-12 col-md-6">
 						<mat-label>Preço Máximo</mat-label>
 						<input matInput type="number" formControlName="maxPrice" placeholder="999,99" />
-						<span matPrefix>R$ </span>
 					</mat-form-field>
-
+				</div>
+				<div class="row d-flex justify-content-end actions">
 					<button
 						mat-raised-button
 						color="warn"
 						type="button"
+						[disabled]="filterForm.pristine || isFilterFormEmpty"
 						(click)="clearFilters()"
-						class="col-12 col-md-3 clear-btn"
+						class="col-6 col-md-3 clear-btn"
 					>
 						<mat-icon>clear</mat-icon>
 						Limpar
+					</button>
+					<button
+						mat-raised-button
+						color="primary"
+						type="button"
+						(click)="onSearch()"
+						[disabled]="loading()"
+						class="col-6 col-md-3"
+						matTooltip="Buscar produtos"
+					>
+						@if (loading()) {
+							<mat-spinner diameter="20"></mat-spinner>
+						} @else {
+							<ng-container> Buscar </ng-container>
+						}
 					</button>
 				</div>
 			</form>
@@ -53,13 +67,9 @@
 			<mat-card-title class="products-header">
 				<div class="header-left">
 					<mat-icon>inventory_2</mat-icon>
-					<span>Gerenciar Produtos</span>
+					<span class="me-2">Gerenciar Produtos</span>
 					<span class="product-count">({{ totalCount() }} produtos)</span>
 				</div>
-				<button mat-raised-button color="primary" (click)="createProduct()" class="create-btn">
-					<mat-icon>add</mat-icon>
-					Novo Produto
-				</button>
 			</mat-card-title>
 		</mat-card-header>
 
@@ -69,14 +79,20 @@
 					<mat-icon>inventory_2</mat-icon>
 					<h3>Nenhum produto encontrado</h3>
 					<p>Não há produtos cadastrados ou que atendam aos filtros aplicados.</p>
-					<button mat-raised-button color="primary" (click)="createProduct()">
-						<mat-icon>add</mat-icon>
-						Cadastrar Primeiro Produto
-					</button>
 				</div>
 			} @else {
-				<div class="products-grid">
-					@for (product of products(); track product.id) {
+				<div
+					class="products-grid"
+					infiniteScroll
+					[scrollWindow]="false"
+					[infiniteScrollDistance]="scrollDistance()"
+					[infiniteScrollThrottle]="50"
+					[infiniteScrollContainer]="'.mat-drawer-content'"
+					[fromRoot]="true"
+					[infiniteScrollDisabled]="loading() || !hasMoreData()"
+					(scrolled)="onScrollDown()"
+				>
+					@for (product of products(); track $index) {
 						<div class="product-card">
 							<div class="product-card-header">
 								<div class="product-image">
@@ -108,7 +124,7 @@
 							<div class="product-card-footer">
 								<div class="product-price">
 									<span class="price-label">Preço:</span>
-									<span class="price-value">{{ formatPrice(product.price) }}</span>
+									<span class="price-value">{{ product.price | currency }}</span>
 								</div>
 
 								<div class="product-rating" *ngIf="product.rating">
@@ -122,15 +138,21 @@
 					}
 				</div>
 
-				<mat-paginator
-					[length]="totalCount()"
-					[pageSize]="pageSize()"
-					[pageIndex]="currentPage()"
-					[pageSizeOptions]="[5, 10, 25, 50]"
-					(page)="onPageChange($event)"
-					showFirstLastButtons
-				>
-				</mat-paginator>
+				<!-- Loading indicator para infinite scroll -->
+				@if (loading()) {
+					<div class="d-flex justify-content-center align-items-center p-4">
+						<mat-spinner diameter="40"></mat-spinner>
+						<span class="ms-3">Carregando mais produtos...</span>
+					</div>
+				}
+
+				<!-- Mensagem quando não há mais dados -->
+				@if (!hasMoreData() && products().length > 0 && !loading()) {
+					<div class="text-center p-4 text-muted">
+						<mat-icon>check_circle</mat-icon>
+						<p class="mb-0 mt-2">Todos os produtos foram carregados</p>
+					</div>
+				}
 			}
 		</mat-card-content>
 	</mat-card>
