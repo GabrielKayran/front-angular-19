@@ -86,11 +86,8 @@ export class LoginComponent {
 			.subscribe({
 				next: response => {
 					this._globalState.setToken(response.token);
-
-					this._router.navigate(['/dashboard']);
-				},
-				error: error => {
-					console.error('Erro no login:', error);
+					const route = response.role === 'Admin' ? '/admin/products' : '/products';
+					this._router.navigate([route]);
 				},
 			});
 	}

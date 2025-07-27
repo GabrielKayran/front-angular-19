@@ -1,0 +1,71 @@
+<mat-card [ngClass]="{ 'sale-card': true, 'cancelled-sale': sale().status.toLowerCase() === 'cancelled' }">
+	<mat-card-header>
+		<div class="sale-header">
+			<div class="sale-info">
+				<h3 class="sale-number">{{ sale().saleNumber }}</h3>
+				<p class="sale-date">{{ formatDate(sale().saleDate) }}</p>
+			</div>
+			<mat-chip>
+				{{ getStatusText(sale().status) }}
+			</mat-chip>
+		</div>
+	</mat-card-header>
+
+	<mat-card-content>
+		<div class="sale-details">
+			<div class="sale-summary">
+				@if (isAdminMode()) {
+				<div class="summary-item">
+					<mat-icon>person</mat-icon>
+					<span>{{ sale().customer }}</span>
+				</div>
+				}
+				<div class="summary-item">
+					<mat-icon>store</mat-icon>
+					<span>{{ sale().branch }}</span>
+				</div>
+				<div class="summary-item">
+					<mat-icon>inventory_2</mat-icon>
+					<span>{{ sale().items.length }} {{ sale().items.length === 1 ? 'item' : 'itens' }}</span>
+				</div>
+				<div class="summary-item total-amount">
+					<mat-icon>attach_money</mat-icon>
+					<span class="amount">{{ formatCurrency(sale().totalAmount) }}</span>
+				</div>
+			</div>
+
+			<mat-divider></mat-divider>
+
+			<div class="items-list">
+				@for (item of sale().items; track item.product) {
+				<div class="item-row">
+					<div class="item-info">
+						<span class="item-name">{{ item.product }}</span>
+						<span class="item-quantity">{{ item.quantity }}x</span>
+					</div>
+					<div class="item-price">
+						<span class="unit-price">{{ formatCurrency(item.unitPrice) }}</span>
+						<span class="total-price">{{ formatCurrency(item.totalAmount) }}</span>
+					</div>
+				</div>
+				}
+			</div>
+		</div>
+	</mat-card-content>
+
+	@if (showActions() && isAdminMode()) {
+	<mat-card-actions align="end">
+		@if (canCancelSale(sale().status)) {
+		<button
+			mat-button
+			color="warn"
+			(click)="onCancelSale()"
+			matTooltip="Cancelar venda"
+		>
+			<mat-icon>cancel</mat-icon>
+			Cancelar Venda
+		</button>
+		}
+	</mat-card-actions>
+	}
+</mat-card>

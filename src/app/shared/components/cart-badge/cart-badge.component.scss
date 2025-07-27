@@ -1,0 +1,13 @@
+@use '../../../../scss/variables' as vars;
+
+.cart-button {
+	position: relative;
+
+	mat-icon {
+		color: vars.$color-primary;
+	}
+
+	&:hover mat-icon {
+		color: #1565c0;
+	}
+}

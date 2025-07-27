@@ -1,0 +1,107 @@
+<div class="cart-container">
+	<mat-card class="cart-card">
+		<mat-card-header>
+			<mat-card-title class="cart-header">
+				<div class="d-flex align-items-center">
+					<mat-icon>shopping_cart</mat-icon>
+					<span class="mx-2">Meu Carrinho</span>
+					<span class="cart-count">({{ cartCount() }} {{ cartCount() === 1 ? 'item' : 'itens' }})</span>
+				</div>
+			</mat-card-title>
+		</mat-card-header>
+
+		<mat-card-content>
+			@if (isLoading()) {
+				<div class="loading-state d-flex justify-content-center align-items-center">
+					<mat-spinner diameter="40"></mat-spinner>
+				</div>
+			} @else if (cartItemsWithDetails().length === 0) {
+				<div class="empty-cart">
+					<mat-icon>shopping_cart</mat-icon>
+					<h3>Seu carrinho está vazio</h3>
+					<p>Adicione produtos para começar suas compras</p>
+					<button mat-raised-button color="primary" (click)="goToProducts()">
+						<mat-icon>store</mat-icon>
+						Ver Produtos
+					</button>
+				</div>
+			} @else {
+				<div class="cart-items my-3">
+					@for (item of cartItemsWithDetails(); track item.productId) {
+						<mat-card class="cart-item-card">
+							<div class="item-content">
+								<div class="item-image">
+									<img
+										width="80"
+										height="80"
+										[ngSrc]="item.product.image"
+										[alt]="item.product.title"
+										appImageFallback="assets/images/default.png"
+									/>
+								</div>
+								<div class="item-details">
+									<h4>{{ item.product.title }}</h4>
+									<p class="item-price">R$ {{ item.product.price | number: '1.2-2' }}</p>
+									<p class="item-category">{{ item.product.category }}</p>
+								</div>
+								<div class="item-controls">
+									<div class="quantity-controls">
+										<button
+											mat-icon-button
+											color="primary"
+											(click)="updateQuantity(item.productId, item.quantity - 1)"
+											[disabled]="item.quantity <= 1"
+											matTooltip="Diminuir quantidade"
+										>
+											<mat-icon>remove</mat-icon>
+										</button>
+										<span class="quantity">{{ item.quantity }}</span>
+										<button
+											mat-icon-button
+											color="primary"
+											(click)="updateQuantity(item.productId, item.quantity + 1)"
+											matTooltip="Aumentar quantidade"
+										>
+											<mat-icon>add</mat-icon>
+										</button>
+									</div>
+									<div class="item-total">
+										<strong>R$ {{ item.product.price * item.quantity | number: '1.2-2' }}</strong>
+									</div>
+									<div class="item-actions">
+										<button mat-icon-button color="warn" (click)="removeItem(item.productId)" matTooltip="Remover item">
+											<mat-icon>delete</mat-icon>
+										</button>
+									</div>
+								</div>
+							</div>
+						</mat-card>
+					}
+				</div>
+
+				<div class="cart-summary">
+					<div class="summary-row">
+						<span>Total de itens:</span>
+						<strong>{{ cartCount() }}</strong>
+					</div>
+					<div class="summary-row">
+						<span>Total:</span>
+						<strong>{{ getTotalPrice() | currency }}</strong>
+					</div>
+				</div>
+
+				<div class="cart-actions">
+					<button mat-button color="warn" (click)="clearCart()" class="w-100">
+						<mat-icon>clear</mat-icon>
+						Limpar Carrinho
+					</button>
+
+					<button mat-raised-button color="primary" (click)="checkout()" class="w-100">
+						<mat-icon>payment</mat-icon>
+						Finalizar Compra
+					</button>
+				</div>
+			}
+		</mat-card-content>
+	</mat-card>
+</div>

@@ -38,7 +38,8 @@
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.scss" 
+              "src/styles.scss",
+              "src/bootstrap.css"
             ],
             "scripts": [],
             "browser": "src/main.ts"

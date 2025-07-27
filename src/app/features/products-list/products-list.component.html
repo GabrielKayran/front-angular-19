@@ -1,0 +1,191 @@
+<div class="products-container">
+	<mat-card class="filter-card">
+		<mat-card-content>
+			<form [formGroup]="filterForm" class="filter-form">
+				<div class="row">
+					<mat-form-field appearance="outline" class="col-12 col-md-6">
+						<mat-label>Nome do Produto</mat-label>
+						<input matInput formControlName="title" placeholder="Digite o nome do produto" />
+					</mat-form-field>
+
+					<mat-form-field appearance="outline" class="col-12 col-md-6">
+						<mat-label>Categoria</mat-label>
+						<mat-select formControlName="category">
+							<mat-option value="">Todas as categorias</mat-option>
+							@for (category of categories(); track category) {
+								<mat-option [value]="category">{{ category }}</mat-option>
+							}
+						</mat-select>
+					</mat-form-field>
+				</div>
+
+				<div class="row">
+					<mat-form-field appearance="outline" class="col-12 col-md-6">
+						<mat-label>Preço Mínimo</mat-label>
+						<input matInput type="number" formControlName="minPrice" placeholder="0,00" />
+					</mat-form-field>
+
+					<mat-form-field appearance="outline" class="col-12 col-md-6">
+						<mat-label>Preço Máximo</mat-label>
+						<input matInput type="number" formControlName="maxPrice" placeholder="999,99" />
+					</mat-form-field>
+				</div>
+				<div class="row d-flex justify-content-end actions">
+					<button
+						mat-raised-button
+						color="warn"
+						type="button"
+						[disabled]="filterForm.pristine || isFilterFormEmpty"
+						(click)="clearFilters()"
+						class="col-6 col-md-3 clear-btn"
+					>
+						<mat-icon>clear</mat-icon>
+						Limpar
+					</button>
+					<button
+						mat-raised-button
+						color="primary"
+						type="button"
+						(click)="onSearch()"
+						[disabled]="loading()"
+						class="col-6 col-md-3"
+						matTooltip="Buscar produtos"
+					>
+						@if (loading()) {
+							<mat-spinner diameter="20"></mat-spinner>
+						} @else {
+							<ng-container> Buscar </ng-container>
+						}
+					</button>
+				</div>
+			</form>
+		</mat-card-content>
+	</mat-card>
+
+	<mat-card class="products-card my-4">
+		<mat-card-header class="mb-3">
+			<mat-card-title class="products-header">
+				<div class="d-flex align-items-center">
+					<mat-icon>{{ headerConfig.icon }}</mat-icon>
+					<span class="mx-2">{{ headerConfig.title }}</span>
+					<span class="product-count">({{ totalCount() }} produtos)</span>
+				</div>
+			</mat-card-title>
+		</mat-card-header>
+
+		<mat-card-content>
+			@if (!products() || products().length === 0) {
+				<div class="empty-state">
+					<mat-icon>{{ headerConfig.icon }}</mat-icon>
+					<h3>{{ emptyStateConfig.title }}</h3>
+					<p>{{ emptyStateConfig.description }}</p>
+				</div>
+			} @else {
+				<div
+					class="products-grid"
+					infiniteScroll
+					[scrollWindow]="false"
+					[infiniteScrollDistance]="scrollDistance()"
+					[infiniteScrollThrottle]="50"
+					[infiniteScrollContainer]="'.mat-drawer-content'"
+					[fromRoot]="true"
+					[infiniteScrollDisabled]="loading() || !hasMoreData()"
+					(scrolled)="onScrollDown()"
+				>
+					@for (product of products(); track $index) {
+						<div class="product-card">
+							<div class="product-card-header">
+								<div class="product-image">
+									<img 
+										width="80" 
+										height="80" 
+										[ngSrc]="product.image" 
+										[alt]="product.title"
+										appImageFallback="assets/images/default.png"
+									/>
+								</div>
+								<div class="product-info">
+									<div class="product-category-chip">
+										<mat-chip class="category-chip">
+											<mat-icon matChipAvatar>category</mat-icon>
+											{{ product.category }}
+										</mat-chip>
+									</div>
+									<h3 class="product-title">{{ product.title }}</h3>
+								</div>
+								<div class="product-actions">
+									@if (isAdminMode) {
+										<button mat-icon-button color="primary" (click)="editProduct(product)" matTooltip="Editar produto">
+											<mat-icon>edit</mat-icon>
+										</button>
+										<button mat-icon-button color="warn" (click)="deleteProduct(product)" matTooltip="Excluir produto">
+											<mat-icon>delete</mat-icon>
+										</button>
+									} @else {
+										<button
+											mat-raised-button
+											color="primary"
+											(click)="addToCart(product)"
+											[matBadge]="getProductQuantity(product.id) > 0 ? getProductQuantity(product.id) : null"
+											matBadgeColor="accent"
+											matBadgePosition="above after"
+											matTooltip="{{
+												isProductInCart(product.id) ? 'Adicionar mais ao carrinho' : 'Adicionar ao carrinho'
+											}}"
+											[disabled]="isCartLoading()"
+										>
+											@if (isCartLoading()) {
+												<mat-spinner diameter="20"></mat-spinner>
+											} @else {
+												<span class="d-flex align-items-center gap-1">
+													<mat-icon>add_shopping_cart</mat-icon>
+													{{ isProductInCart(product.id) ? 'Adicionar +' : 'Adicionar' }}
+												</span>
+											}
+										</button>
+									}
+								</div>
+							</div>
+
+							<div class="product-description">
+								{{ product.description | slice: 0 : 120 }}{{ product.description.length > 120 ? '...' : '' }}
+							</div>
+
+							<div class="product-card-footer">
+								<div class="product-price">
+									<span class="price-label">Preço:</span>
+									<span class="price-value">{{ product.price | currency }}</span>
+								</div>
+
+								@if (product.rating) {
+								<div class="product-rating">
+									<mat-chip class="rating-chip">
+										<mat-icon matChipAvatar>star</mat-icon>
+										{{ product.rating.rate }} ({{ product.rating.count }})
+									</mat-chip>
+								</div>
+								}
+							</div>
+						</div>
+					}
+				</div>
+
+				<!-- Loading indicator para infinite scroll -->
+				@if (loading()) {
+					<div class="d-flex justify-content-center align-items-center p-4">
+						<mat-spinner diameter="40"></mat-spinner>
+						<span class="ms-3">Carregando mais produtos...</span>
+					</div>
+				}
+
+				<!-- Mensagem quando não há mais dados -->
+				@if (!hasMoreData() && products().length > 0 && !loading()) {
+					<div class="text-center p-4 text-muted">
+						<mat-icon>check_circle</mat-icon>
+						<p class="mb-0 mt-2">Todos os produtos foram carregados</p>
+					</div>
+				}
+			}
+		</mat-card-content>
+	</mat-card>
+</div>

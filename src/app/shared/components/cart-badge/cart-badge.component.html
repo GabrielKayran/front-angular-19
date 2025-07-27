@@ -1,0 +1,13 @@
+@if (cartService.currentCart()) {
+	<button
+		mat-icon-button
+		(click)="goToCart()"
+		[matBadge]="cartCount() > 0 ? cartCount() : null"
+		matBadgeColor="accent"
+		matBadgePosition="above after"
+		matTooltip="Ver carrinho"
+		class="cart-button"
+	>
+		<mat-icon>shopping_cart</mat-icon>
+	</button>
+}
