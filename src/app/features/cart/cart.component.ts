@@ -14,6 +14,7 @@ import { GlobalStateService } from '@core/services/global-state.service';
 import { ImageFallbackDirective } from '@shared/directives/image-fallback.directive';
 import { of, switchMap } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { MenuService } from '@core/services/menu.service';
 
 @Component({
 	selector: 'app-cart',
@@ -32,6 +33,7 @@ import { catchError, tap } from 'rxjs/operators';
 	styleUrl: './cart.component.scss',
 })
 export class CartComponent implements OnInit {
+	private readonly _menuService = inject(MenuService);
 	private readonly _cartService = inject(CartService);
 	private readonly _snackBar = inject(MatSnackBar);
 	private readonly _router = inject(Router);
@@ -44,6 +46,7 @@ export class CartComponent implements OnInit {
 	public readonly cartItemsWithDetails = signal<CartProductWithDetails[]>([]);
 
 	ngOnInit(): void {
+		this._menuService.closeMenu();
 		this._loadCartItemsWithDetails();
 	}
 

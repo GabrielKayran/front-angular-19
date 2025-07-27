@@ -30,14 +30,14 @@
 						<input matInput type="number" formControlName="maxPrice" placeholder="999,99" />
 					</mat-form-field>
 				</div>
-				<div class="row d-flex justify-content-end actions">
+				<div class="row d-flex justify-content-end gap-2">
 					<button
 						mat-raised-button
 						color="warn"
 						type="button"
 						[disabled]="filterForm.pristine || isFilterFormEmpty"
 						(click)="clearFilters()"
-						class="col-6 col-md-3 clear-btn"
+						class="col-12 col-md-3 clear-btn"
 					>
 						<mat-icon>clear</mat-icon>
 						Limpar
@@ -48,7 +48,7 @@
 						type="button"
 						(click)="onSearch()"
 						[disabled]="loading()"
-						class="col-6 col-md-3"
+						class="col-12 col-md-3"
 						matTooltip="Buscar produtos"
 					>
 						@if (loading()) {
@@ -96,10 +96,10 @@
 						<div class="product-card">
 							<div class="product-card-header">
 								<div class="product-image">
-									<img 
-										width="80" 
-										height="80" 
-										[ngSrc]="product.image" 
+									<img
+										width="80"
+										height="80"
+										[ngSrc]="product.image"
 										[alt]="product.title"
 										appImageFallback="assets/images/default.png"
 									/>
@@ -158,12 +158,12 @@
 								</div>
 
 								@if (product.rating) {
-								<div class="product-rating">
-									<mat-chip class="rating-chip">
-										<mat-icon matChipAvatar>star</mat-icon>
-										{{ product.rating.rate }} ({{ product.rating.count }})
-									</mat-chip>
-								</div>
+									<div class="product-rating">
+										<mat-chip class="rating-chip">
+											<mat-icon matChipAvatar>star</mat-icon>
+											{{ product.rating.rate }} ({{ product.rating.count }})
+										</mat-chip>
+									</div>
 								}
 							</div>
 						</div>
