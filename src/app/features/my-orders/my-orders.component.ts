@@ -47,7 +47,6 @@ export class MyOrdersComponent implements OnInit {
 	public readonly currentPage = signal(1);
 	public readonly pageSize = signal(10);
 	public readonly hasMoreData = signal(true);
-	public readonly scrollDistance = signal(2);
 
 	ngOnInit(): void {
 		this._closeMenu();

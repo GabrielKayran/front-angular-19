@@ -19,8 +19,9 @@ export interface MenuItem {
 	styleUrl: './menu.component.scss',
 })
 export class MenuComponent implements OnInit {
-	private _globalState = inject(GlobalStateService);
-	private _router = inject(Router);
+	private readonly _globalState = inject(GlobalStateService);
+	private readonly _router = inject(Router);
+
 	menuItems: MenuItem[] = [];
 	isCollapsed = input<boolean | undefined>(false);
 
@@ -28,11 +29,15 @@ export class MenuComponent implements OnInit {
 
 	ngOnInit() {
 		this._globalState.populateUser$.subscribe(() => {
-			this.buildMenuItems();
+			this._buildMenuItems();
 		});
 	}
 
-	private buildMenuItems() {
+	public isRouteActive(route: string): boolean {
+		return this._router.url === route || this._router.url.startsWith(route + '/');
+	}
+
+	private _buildMenuItems() {
 		if (this.user()?.role === 'Admin') {
 			this.menuItems = [
 				{
@@ -76,9 +81,5 @@ export class MenuComponent implements OnInit {
 				},
 			];
 		}
-	}
-
-	isRouteActive(route: string): boolean {
-		return this._router.url === route || this._router.url.startsWith(route + '/');
 	}
 }

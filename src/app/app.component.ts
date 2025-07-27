@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
 
 	private readonly _globalStateService = inject(GlobalStateService);
 	private readonly _menuService = inject(MenuService);
-	private _router = inject(Router);
+	private readonly _router = inject(Router);
 
 	public readonly isMenuOpen = this._menuService.isMenuOpen;
 
@@ -49,11 +49,11 @@ export class AppComponent implements OnInit {
 		this._checkAuthRoute(this._router.url);
 	}
 
-	toggleMenu(): void {
+	public toggleMenu(): void {
 		this._menuService.toggleMenu();
 	}
 
-	logout(): void {
+	public logout(): void {
 		this._globalStateService.clearToken();
 		this.hasUser.set(false);
 		this._router.navigate(['/login']);

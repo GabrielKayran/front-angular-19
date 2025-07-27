@@ -75,7 +75,6 @@ export class SalesManagementComponent implements OnInit {
 	public readonly currentPage = signal(1);
 	public readonly pageSize = signal(10);
 	public readonly hasMoreData = signal(true);
-	public readonly scrollDistance = signal(2);
 
 	public filterForm: FormGroup<SalesFilterFormControls> = this._fb.group<SalesFilterFormControls>({
 		saleNumber: this._fb.control('', { nonNullable: true }),
@@ -117,46 +116,6 @@ export class SalesManagementComponent implements OnInit {
 		}
 	}
 
-	private _loadSales(append = false): void {
-		this.loading.set(true);
-
-		const formValue = this.filterForm.value;
-		const dateRangeValue = this.dateRangeGroup.value;
-		const request: GetSalesRequest = {
-			page: this.currentPage(),
-			pageSize: this.pageSize(),
-			saleNumber: formValue.saleNumber || undefined,
-			customer: formValue.customer || undefined,
-			branch: formValue.branch || undefined,
-			status: (formValue.status as EntityStatus) || undefined,
-			startDate: dateRangeValue.start ? dateRangeValue.start.toISOString() : undefined,
-			endDate: dateRangeValue.end ? dateRangeValue.end.toISOString() : undefined,
-		};
-
-		this._salesClientService.getSales(request, true).subscribe({
-			next: response => {
-				const newSales = response.data || [];
-
-				if (append) {
-					this.sales.set([...this.sales(), ...newSales]);
-				} else {
-					this.sales.set(newSales);
-				}
-
-				this.totalCount.set(response.totalCount || 0);
-
-				const totalLoaded = this.sales().length;
-				this.hasMoreData.set(totalLoaded < this.totalCount());
-
-				this.loading.set(false);
-			},
-			error: () => {
-				this._snackBar.open('Erro ao carregar vendas', 'Fechar', { duration: 3000 });
-				this.loading.set(false);
-			},
-		});
-	}
-
 	public onFilterChange(): void {
 		this.currentPage.set(1);
 		this.hasMoreData.set(true);
@@ -165,7 +124,6 @@ export class SalesManagementComponent implements OnInit {
 
 	public onScrollDown(): void {
 		if (!this.loading() && this.hasMoreData()) {
-			// Salvar posição atual do scroll antes de carregar mais dados
 			const scrollContainer = document.querySelector('.mat-drawer-content');
 			const currentScrollTop = scrollContainer?.scrollTop || 0;
 
@@ -219,5 +177,45 @@ export class SalesManagementComponent implements OnInit {
 
 	public getTotalSalesAmount(): number {
 		return this.sales().reduce((total, sale) => total + sale.totalAmount, 0);
+	}
+
+	private _loadSales(append = false): void {
+		this.loading.set(true);
+
+		const formValue = this.filterForm.value;
+		const dateRangeValue = this.dateRangeGroup.value;
+		const request: GetSalesRequest = {
+			page: this.currentPage(),
+			pageSize: this.pageSize(),
+			saleNumber: formValue.saleNumber || undefined,
+			customer: formValue.customer || undefined,
+			branch: formValue.branch || undefined,
+			status: (formValue.status as EntityStatus) || undefined,
+			startDate: dateRangeValue.start ? dateRangeValue.start.toISOString() : undefined,
+			endDate: dateRangeValue.end ? dateRangeValue.end.toISOString() : undefined,
+		};
+
+		this._salesClientService.getSales(request, true).subscribe({
+			next: response => {
+				const newSales = response.data || [];
+
+				if (append) {
+					this.sales.set([...this.sales(), ...newSales]);
+				} else {
+					this.sales.set(newSales);
+				}
+
+				this.totalCount.set(response.totalCount || 0);
+
+				const totalLoaded = this.sales().length;
+				this.hasMoreData.set(totalLoaded < this.totalCount());
+
+				this.loading.set(false);
+			},
+			error: () => {
+				this._snackBar.open('Erro ao carregar vendas', 'Fechar', { duration: 3000 });
+				this.loading.set(false);
+			},
+		});
 	}
 }

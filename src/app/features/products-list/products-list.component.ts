@@ -72,14 +72,14 @@ interface FilterFormControls {
 	styleUrls: ['./products-list.component.scss'],
 })
 export class ProductsListComponent implements OnInit {
-	private _productsService = inject(ProductsClientService);
-	private _globalState = inject(GlobalStateService);
-	private _router = inject(Router);
-	private _snackBar = inject(MatSnackBar);
-	private _fb = inject(FormBuilder);
-	private _dialog = inject(MatDialog);
-	private _cartService = inject(CartService);
-	private _menuService = inject(MenuService);
+	private readonly _productsService = inject(ProductsClientService);
+	private readonly _globalState = inject(GlobalStateService);
+	private readonly _router = inject(Router);
+	private readonly _snackBar = inject(MatSnackBar);
+	private readonly _fb = inject(FormBuilder);
+	private readonly _dialog = inject(MatDialog);
+	private readonly _cartService = inject(CartService);
+	private readonly _menuService = inject(MenuService);
 
 	products = signal<GetProductsResponseDto[]>([]);
 	categories = signal<string[]>([]);

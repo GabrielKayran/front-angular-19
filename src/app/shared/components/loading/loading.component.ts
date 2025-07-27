@@ -15,5 +15,5 @@ import { LoadingService } from './services/loading.service';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingComponent {
-	loadingService = inject(LoadingService);
+	public loadingService = inject(LoadingService);
 }

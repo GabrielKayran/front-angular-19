@@ -45,15 +45,14 @@ interface RegisterFormControls {
 	styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
-	private _fb = inject(FormBuilder);
-	private _usersClient = inject(UsersClientService);
-	private _router = inject(Router);
-	private _snackBar = inject(MatSnackBar);
+	private readonly _fb = inject(FormBuilder);
+	private readonly _usersClient = inject(UsersClientService);
+	private readonly _router = inject(Router);
+	private readonly _snackBar = inject(MatSnackBar);
 
 	isLoading = signal(false);
 	hidePassword = signal(true);
 
-	// Opções de tipo de usuário
 	userTypeOptions: { value: UserRole; label: string }[] = [
 		{ value: 'Customer', label: 'Cliente' },
 		{ value: 'Admin', label: 'Administrador' },
