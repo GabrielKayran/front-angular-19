@@ -8,7 +8,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { CartService, CartProductWithDetails } from '@core/services/cart.service';
+import { SalesClientService } from '@app/clients/sales/sales-client.service';
+import { CreateSaleRequest } from '@app/clients/sales/sale.interface';
+import { GlobalStateService } from '@core/services/global-state.service';
 import { ImageFallbackDirective } from '@shared/directives/image-fallback.directive';
+import { of, switchMap } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-cart',
@@ -30,6 +35,8 @@ export class CartComponent implements OnInit {
 	private readonly _cartService = inject(CartService);
 	private readonly _snackBar = inject(MatSnackBar);
 	private readonly _router = inject(Router);
+	private readonly _salesService = inject(SalesClientService);
+	private readonly _globalState = inject(GlobalStateService);
 
 	public readonly cartCount = this._cartService.cartCount;
 	public readonly isLoading = this._cartService.isLoading;
@@ -37,30 +44,14 @@ export class CartComponent implements OnInit {
 	public readonly cartItemsWithDetails = signal<CartProductWithDetails[]>([]);
 
 	ngOnInit(): void {
-		this.loadCartItemsWithDetails();
-	}
-
-	/**
-	 * Carrega os produtos do carrinho com detalhes completos
-	 */
-	private loadCartItemsWithDetails(): void {
-		this._cartService.getCartItemsWithDetails().subscribe({
-			next: items => {
-				this.cartItemsWithDetails.set(items);
-			},
-			error: error => {
-				console.error('Erro ao carregar produtos do carrinho:', error);
-				this._snackBar.open('Erro ao carregar produtos do carrinho', 'Fechar', { duration: 3000 });
-			},
-		});
+		this._loadCartItemsWithDetails();
 	}
 
 	public updateQuantity(productId: string, quantity: number): void {
 		this._cartService.updateProductQuantity(productId, quantity).subscribe({
 			next: () => {
 				this._snackBar.open('Quantidade atualizada!', 'Fechar', { duration: 3000 });
-				// Recarrega os produtos com detalhes após atualização
-				this.loadCartItemsWithDetails();
+				this._loadCartItemsWithDetails();
 			},
 			error: () => {
 				this._snackBar.open('Erro ao atualizar quantidade', 'Fechar', { duration: 3000 });
@@ -72,8 +63,7 @@ export class CartComponent implements OnInit {
 		this._cartService.removeFromCart(productId).subscribe({
 			next: () => {
 				this._snackBar.open('Item removido do carrinho!', 'Fechar', { duration: 3000 });
-				// Recarrega os produtos com detalhes após remoção
-				this.loadCartItemsWithDetails();
+				this._loadCartItemsWithDetails();
 			},
 			error: () => {
 				this._snackBar.open('Erro ao remover item', 'Fechar', { duration: 3000 });
@@ -103,7 +93,68 @@ export class CartComponent implements OnInit {
 		this._router.navigate(['/products']);
 	}
 
-	public async checkout(): Promise<void> {
-		this._snackBar.open('Funcionalidade de checkout em desenvolvimento', 'Fechar', { duration: 3000 });
+	public checkout(): void {
+		const user = this._globalState.user();
+		if (!user) {
+			this._notify('Usuário não autenticado');
+			return;
+		}
+
+		const cartItems = this.cartItemsWithDetails();
+		if (cartItems.length === 0) {
+			this._notify('Carrinho vazio');
+			return;
+		}
+
+		const saleNumber = `SALE-${Date.now()}`;
+		const saleRequest: CreateSaleRequest = {
+			saleNumber,
+			saleDate: new Date().toISOString(),
+			customer: user.username,
+			branch: 'Online Store',
+			items: cartItems.map(item => ({
+				productId: item.productId,
+				product: item.product.title,
+				quantity: item.quantity,
+				unitPrice: item.product.price,
+			})),
+		};
+
+		this._salesService
+			.createSale(saleRequest)
+			.pipe(
+				tap(sale => {
+					if (!sale) throw new Error('Erro ao processar venda');
+				}),
+				switchMap(sale =>
+					this._cartService.clearCart().pipe(
+						tap(() => {
+							this.cartItemsWithDetails.set([]);
+							this._notify(`Compra realizada com sucesso! Número da venda: ${sale.saleNumber}`, 5000);
+							this._router.navigate(['/my-orders']);
+						})
+					)
+				),
+				catchError(() => {
+					this._notify('Erro ao processar venda');
+					return of();
+				})
+			)
+			.subscribe();
+	}
+
+	private _loadCartItemsWithDetails(): void {
+		this._cartService.getCartItemsWithDetails().subscribe({
+			next: items => {
+				this.cartItemsWithDetails.set(items);
+			},
+			error: () => {
+				this._snackBar.open('Erro ao carregar produtos do carrinho', 'Fechar', { duration: 3000 });
+			},
+		});
+	}
+
+	private _notify(message: string, duration = 3000): void {
+		this._snackBar.open(message, 'Fechar', { duration });
 	}
 }

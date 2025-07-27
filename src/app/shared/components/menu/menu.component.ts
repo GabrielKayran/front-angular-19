@@ -47,9 +47,21 @@ export class MenuComponent implements OnInit {
 					route: '/admin/products/create',
 					action: () => this._router.navigate(['/admin/products/create']),
 				},
+				{
+					label: 'Vendas',
+					icon: 'point_of_sale',
+					route: '/admin/sales',
+					action: () => this._router.navigate(['/admin/sales']),
+				},
 			];
 		} else {
 			this.menuItems = [
+				{
+					label: 'Lista de Produtos',
+					icon: 'list',
+					route: '/products',
+					action: () => this._router.navigate(['/products']),
+				},
 				{
 					label: 'Carrinho',
 					icon: 'shopping_cart',
@@ -57,10 +69,10 @@ export class MenuComponent implements OnInit {
 					action: () => this._router.navigate(['/cart']),
 				},
 				{
-					label: 'Lista de Produtos',
-					icon: 'list',
-					route: '/products',
-					action: () => this._router.navigate(['/products']),
+					label: 'Meus Pedidos',
+					icon: 'receipt_long',
+					route: '/my-orders',
+					action: () => this._router.navigate(['/my-orders']),
 				},
 			];
 		}

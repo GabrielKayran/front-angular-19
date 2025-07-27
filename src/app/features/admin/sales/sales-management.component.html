@@ -1,0 +1,139 @@
+<div class="sales-management-container">
+	<!-- Header -->
+	<div class="header-section">
+		<div class="header-content">
+			<mat-icon class="header-icon">point_of_sale</mat-icon>
+			<h1 class="header-title">Gestão de Vendas</h1>
+		</div>
+		<p class="header-subtitle">Gerencie todas as vendas da plataforma</p>
+	</div>
+
+	<mat-card class="filters-card">
+		<mat-card-header>
+			<mat-card-title>
+				<mat-icon>filter_list</mat-icon>
+				Filtros
+			</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<form [formGroup]="filterForm" class="filters-form mt-3">
+				<div class="filter-row">
+					<mat-form-field appearance="outline">
+						<mat-label>Número da Venda</mat-label>
+						<input matInput formControlName="saleNumber" placeholder="Ex: SALE-123456" />
+						<mat-icon matSuffix>receipt</mat-icon>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>Cliente</mat-label>
+						<input matInput formControlName="customer" placeholder="Nome do cliente" />
+						<mat-icon matSuffix>person</mat-icon>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>Filial</mat-label>
+						<input matInput formControlName="branch" placeholder="Nome da filial" />
+						<mat-icon matSuffix>store</mat-icon>
+					</mat-form-field>
+				</div>
+
+				<div class="filter-row">
+					<mat-form-field appearance="outline">
+						<mat-label>Status</mat-label>
+						<mat-select formControlName="status">
+							<mat-option *ngFor="let status of statusOptions" [value]="status.value">
+								{{ status.label }}
+							</mat-option>
+						</mat-select>
+						<mat-icon matSuffix>flag</mat-icon>
+					</mat-form-field>
+
+					<mat-form-field appearance="outline">
+						<mat-label>Período</mat-label>
+						<mat-date-range-input [rangePicker]="dateRangePicker" [formGroup]="dateRangeGroup">
+							<input matStartDate formControlName="start" placeholder="Data inicial" />
+							<input matEndDate formControlName="end" placeholder="Data final" />
+						</mat-date-range-input>
+						<mat-datepicker-toggle matSuffix [for]="dateRangePicker"></mat-datepicker-toggle>
+						<mat-date-range-picker #dateRangePicker></mat-date-range-picker>
+					</mat-form-field>
+				</div>
+
+				<div class="filter-actions">
+					<button mat-button (click)="clearFilters()" [disabled]="isFilterFormEmpty">
+						<mat-icon>clear</mat-icon>
+						Limpar
+					</button>
+					<button mat-raised-button color="primary" (click)="onFilterChange()">
+						<mat-icon>search</mat-icon>
+						Filtrar
+					</button>
+				</div>
+			</form>
+		</mat-card-content>
+	</mat-card>
+
+	<div *ngIf="loading()" class="d-flex align-items-center justify-content-center my-4">
+		<mat-spinner diameter="50"></mat-spinner>
+	</div>
+
+	<div *ngIf="!loading() && sales().length === 0" class="empty-state">
+		<mat-icon class="empty-icon">point_of_sale</mat-icon>
+		<h2>Nenhuma venda encontrada</h2>
+		<p>Não há vendas que correspondam aos filtros aplicados.</p>
+	</div>
+	<div *ngIf="!loading() && sales().length > 0" class="summary-section my-3">
+		<mat-card class="summary-card">
+			<mat-card-content>
+				<div class="summary-stats">
+					<div class="stat-item">
+						<mat-icon>receipt</mat-icon>
+						<div class="stat-content">
+							<span class="stat-value">{{ totalCount() }}</span>
+							<span class="stat-label">Total de Vendas</span>
+						</div>
+					</div>
+					<div class="stat-item">
+						<mat-icon>attach_money</mat-icon>
+						<div class="stat-content">
+							<span class="stat-value">{{ formatCurrency(getTotalSalesAmount()) }}</span>
+							<span class="stat-label">Valor Total</span>
+						</div>
+					</div>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	</div>
+	<div
+		*ngIf="sales().length > 0"
+		class="sales-list"
+		infiniteScroll
+		[scrollWindow]="false"
+		[infiniteScrollDistance]="scrollDistance()"
+		[infiniteScrollThrottle]="300"
+		[infiniteScrollContainer]="'.mat-drawer-content'"
+		[fromRoot]="true"
+		[infiniteScrollDisabled]="loading() || !hasMoreData()"
+		[alwaysCallback]="false"
+		[immediateCheck]="false"
+		(scrolled)="onScrollDown()"
+	>
+		<app-sale-card
+			*ngFor="let sale of sales()"
+			[sale]="sale"
+			[showActions]="true"
+			[isAdminMode]="true"
+			(cancelSale)="cancelSale($event)"
+		></app-sale-card>
+
+		<div *ngIf="loading() && sales().length > 0" class="loading-more">
+			<mat-spinner diameter="30"></mat-spinner>
+			<p>Carregando mais vendas...</p>
+		</div>
+
+		<div *ngIf="!loading() && !hasMoreData() && sales().length > 0" class="all-loaded">
+			<mat-icon>check_circle</mat-icon>
+			<p>Todas as vendas foram carregadas</p>
+		</div>
+	</div>
+</div>

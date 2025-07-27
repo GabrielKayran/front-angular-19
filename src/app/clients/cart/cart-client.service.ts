@@ -5,6 +5,7 @@ import { CreateCartRequest, GetCartResponse, GetCartsRequest } from '@app/client
 import { ApiResponseWithData, PaginatedResponse } from '@shared/interfaces';
 import { map, Observable } from 'rxjs';
 import { BaseResponse } from '@core/class/base-response/base-response';
+import { BYPASS_LOADING } from '@shared/components/loading/interceptors/loading.interceptor';
 
 @Injectable({
 	providedIn: 'root',
@@ -40,21 +41,38 @@ export class CartClientService {
 			.pipe(map(BaseResponse.extractResult));
 	}
 
-	getMyCart(): Observable<GetCartResponse> {
+	getMyCart(skipLoading?: boolean): Observable<GetCartResponse> {
+		let params = new HttpParams();
+
+		if (skipLoading) {
+			params = params.set(BYPASS_LOADING, 'true');
+		}
+
 		return this._http
-			.get<ApiResponseWithData<GetCartResponse>>(`${this._baseUrl}/my-cart`)
+			.get<ApiResponseWithData<GetCartResponse>>(`${this._baseUrl}/my-cart`, { params })
 			.pipe(map(BaseResponse.extractResult));
 	}
 
-	createCart(request: CreateCartRequest): Observable<GetCartResponse> {
+	createCart(request: CreateCartRequest, skipLoading?: boolean): Observable<GetCartResponse> {
+		let params = new HttpParams();
+
+		if (skipLoading) {
+			params = params.set(BYPASS_LOADING, 'true');
+		}
+
 		return this._http
-			.post<ApiResponseWithData<GetCartResponse>>(`${this._baseUrl}`, request)
+			.post<ApiResponseWithData<GetCartResponse>>(`${this._baseUrl}`, request, { params })
 			.pipe(map(BaseResponse.extractResult));
 	}
 
-	updateCart(request: CreateCartRequest): Observable<GetCartResponse> {
+	updateCart(request: CreateCartRequest, skipLoading?: boolean): Observable<GetCartResponse> {
+		let params = new HttpParams();
+
+		if (skipLoading) {
+			params = params.set(BYPASS_LOADING, 'true');
+		}
 		return this._http
-			.put<ApiResponseWithData<GetCartResponse>>(`${this._baseUrl}/${request.cartId}`, request)
+			.put<ApiResponseWithData<GetCartResponse>>(`${this._baseUrl}/${request.cartId}`, request, { params })
 			.pipe(map(BaseResponse.extractResult));
 	}
 

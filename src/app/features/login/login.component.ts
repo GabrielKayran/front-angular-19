@@ -86,8 +86,8 @@ export class LoginComponent {
 			.subscribe({
 				next: response => {
 					this._globalState.setToken(response.token);
-
-					this._router.navigate(['/dashboard']);
+					const route = response.role === 'Admin' ? '/admin/products' : '/products';
+					this._router.navigate([route]);
 				},
 			});
 	}

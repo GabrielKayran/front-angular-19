@@ -14,14 +14,9 @@ export const routes: Routes = [
 	},
 
 	{
-		path: 'dashboard',
-		loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
-	},
-
-	{
 		path: 'admin/products',
 		loadComponent: () =>
-			import('@shared/components/products-list/products-list.component').then(m => m.ProductsListComponent),
+			import('@app/features/products-list/products-list.component').then(m => m.ProductsListComponent),
 	},
 	{
 		path: 'admin/products/create',
@@ -36,11 +31,19 @@ export const routes: Routes = [
 	{
 		path: 'products',
 		loadComponent: () =>
-			import('@shared/components/products-list/products-list.component').then(m => m.ProductsListComponent),
+			import('@app/features/products-list/products-list.component').then(m => m.ProductsListComponent),
 	},
 	{
 		path: 'cart',
 		loadComponent: () => import('./features/cart/cart.component').then(m => m.CartComponent),
+	},
+	{
+		path: 'my-orders',
+		loadComponent: () => import('./features/my-orders/my-orders.component').then(m => m.MyOrdersComponent),
+	},
+	{
+		path: 'admin/sales',
+		loadComponent: () => import('./features/admin/sales/sales-management.component').then(m => m.SalesManagementComponent),
 	},
 
 	{ path: '**', redirectTo: '/login' },

@@ -1,0 +1,74 @@
+<div class="my-orders-container">
+	<div class="header-section">
+		<div class="header-content">
+			<mat-icon class="header-icon">receipt_long</mat-icon>
+			<h1 class="header-title">Meus Pedidos</h1>
+		</div>
+		<p class="header-subtitle">Acompanhe o histórico das suas compras</p>
+	</div>
+
+	<div *ngIf="loading()" class="loading-container">
+		<mat-spinner diameter="50"></mat-spinner>
+		<p>Carregando pedidos...</p>
+	</div>
+
+	<div *ngIf="!loading() && orders().length === 0" class="empty-state">
+		<mat-icon class="empty-icon">shopping_cart_checkout</mat-icon>
+		<h2>Nenhum pedido encontrado</h2>
+		<p>Você ainda não fez nenhuma compra. Que tal explorar nossos produtos?</p>
+		<button mat-raised-button color="primary" (click)="goToProducts()">
+			<mat-icon>store</mat-icon>
+			Ver Produtos
+		</button>
+	</div>
+
+	<div *ngIf="!loading() && orders().length > 0" class="summary-section my-3">
+		<mat-card class="summary-card">
+			<mat-card-content>
+				<div class="summary-stats">
+					<div class="stat-item">
+						<mat-icon>receipt</mat-icon>
+						<div class="stat-content">
+							<span class="stat-value">{{ totalCount() }}</span>
+							<span class="stat-label">Total de Pedidos</span>
+						</div>
+					</div>
+				</div>
+			</mat-card-content>
+		</mat-card>
+	</div>
+
+	<div
+		*ngIf="orders().length > 0"
+		class="orders-list"
+		infiniteScroll
+		[scrollWindow]="false"
+		[infiniteScrollDistance]="scrollDistance()"
+		[infiniteScrollThrottle]="300"
+		[infiniteScrollContainer]="'.mat-drawer-content'"
+		[fromRoot]="true"
+		[infiniteScrollDisabled]="loading() || !hasMoreData()"
+		[alwaysCallback]="false"
+		[immediateCheck]="false"
+		(scrolled)="onScrollDown()"
+	>
+		<app-sale-card
+			*ngFor="let order of orders()"
+			[sale]="order"
+			[showActions]="false"
+			[isAdminMode]="false"
+		></app-sale-card>
+
+		<div *ngIf="loading() && orders().length > 0" class="d-flex justify-content-center align-items-center p-4">
+			<mat-spinner diameter="30"></mat-spinner>
+		</div>
+
+		<div
+			*ngIf="!loading() && !hasMoreData() && orders().length > 0"
+			class="all-loaded d-flex align-items-center justify-content-center"
+		>
+			<mat-icon>check_circle</mat-icon>
+			<p>Todos os pedidos foram carregados</p>
+		</div>
+	</div>
+</div>

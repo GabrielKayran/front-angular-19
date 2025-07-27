@@ -1,4 +1,3 @@
-import { HttpParams } from '@angular/common/module.d-CnjH8Dlt';
 import { inject, Injectable } from '@angular/core';
 import { BYPASS_LOADING } from '@app/shared/components/loading/interceptors/loading.interceptor';
 import { ApiResponseWithData, PaginatedResponse } from '@shared/interfaces';
@@ -11,11 +10,11 @@ import {
 	GetSaleRequest,
 	GetSaleResponse,
 	GetSalesRequest,
-	GetSalesResponse,
+	SaleResponseDto,
 	UpdateSaleRequest,
 	UpdateSaleResponse,
 } from '@app/clients/sales/sale.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '@env/environment';
 
 @Injectable({
@@ -44,7 +43,7 @@ export class SalesClientService {
 			.pipe(map(BaseResponse.extractResult));
 	}
 
-	getSales(request: GetSalesRequest, skipLoading?: boolean): Observable<PaginatedResponse<GetSalesResponse>> {
+	getSales(request: GetSalesRequest, skipLoading?: boolean): Observable<PaginatedResponse<SaleResponseDto>> {
 		let params = new HttpParams()
 			.set('page', (request.page || 1).toString())
 			.set('pageSize', (request.pageSize || 10).toString());
@@ -62,16 +61,16 @@ export class SalesClientService {
 			params = params.set('status', request.status);
 		}
 		if (request.startDate) {
-			params = params.set('startDate', request.startDate);
+			params = params.set('minDate', request.startDate);
 		}
 		if (request.endDate) {
-			params = params.set('endDate', request.endDate);
+			params = params.set('maxDate', request.endDate);
 		}
 		if (skipLoading) {
 			params = params.set(BYPASS_LOADING, 'true');
 		}
 
-		return this._http.get<PaginatedResponse<GetSalesResponse>>(`${this._baseUrl}`, { params });
+		return this._http.get<PaginatedResponse<SaleResponseDto>>(`${this._baseUrl}`, { params });
 	}
 
 	updateSale(request: UpdateSaleRequest, skipLoading?: boolean): Observable<UpdateSaleResponse> {

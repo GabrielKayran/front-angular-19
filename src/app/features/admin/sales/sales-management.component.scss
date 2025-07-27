@@ -1,0 +1,420 @@
+.sales-management-container {
+	padding: 2rem;
+	max-width: 1400px;
+	margin: 0 auto;
+}
+
+.header-section {
+	margin-bottom: 2rem;
+	text-align: center;
+
+	.header-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		margin-bottom: 0.5rem;
+
+		.header-icon {
+			font-size: 2.5rem;
+			width: 2.5rem;
+			height: 2.5rem;
+		}
+
+		.header-title {
+			margin: 0;
+			font-size: 2rem;
+			font-weight: 600;
+		}
+	}
+
+	.header-subtitle {
+		margin: 0;
+		font-size: 1rem;
+	}
+}
+
+.filters-card {
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+	mat-card-title {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 600;
+	}
+
+	.filters-form {
+		.filter-row {
+			display: flex;
+			gap: 1rem;
+			margin-bottom: 1rem;
+			flex-wrap: wrap;
+
+			mat-form-field {
+				flex: 1;
+				min-width: 250px;
+			}
+		}
+
+		.filter-actions {
+			display: flex;
+			gap: 1rem;
+			justify-content: flex-end;
+			margin-top: 1rem;
+
+			button {
+				gap: 0.5rem;
+			}
+		}
+	}
+}
+
+.loading-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 4rem 2rem;
+	gap: 1rem;
+
+	p {
+		margin: 0;
+	}
+}
+
+.empty-state {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 4rem 2rem;
+	text-align: center;
+
+	.empty-icon {
+		font-size: 4rem;
+		width: 4rem;
+		height: 4rem;
+		color: var(--text-disabled);
+		margin-bottom: 1rem;
+	}
+
+	h2 {
+		margin: 0 0 0.5rem 0;
+		font-weight: 500;
+	}
+
+	p {
+		margin: 0;
+		max-width: 400px;
+	}
+}
+
+.sales-list {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+}
+
+.sale-card {
+	margin-bottom: 1rem;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
+	border-left: 4px solid transparent;
+
+	&:hover {
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+	}
+
+	&.cancelled-sale {
+		border-left: 4px solid #f44336 !important;
+		background-color: rgba(244, 67, 54, 0.02) !important;
+		box-shadow: 0 2px 8px rgba(244, 67, 54, 0.1) !important;
+		opacity: 0.85;
+
+		&:hover {
+			box-shadow: 0 4px 12px rgba(244, 67, 54, 0.15) !important;
+			opacity: 1;
+		}
+
+		.sale-number {
+			color: #666 !important;
+			text-decoration: line-through;
+		}
+
+		.sale-date {
+			color: #999 !important;
+		}
+
+		.item-name {
+			color: #777 !important;
+		}
+
+		.item-price {
+			color: #888 !important;
+		}
+
+		.total-amount {
+			color: #666 !important;
+			text-decoration: line-through;
+		}
+	}
+
+	.sale-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		width: 100%;
+
+		.sale-info {
+			.sale-number {
+				margin: 0 0 0.25rem 0;
+				font-size: 1.25rem;
+				font-weight: 600;
+			}
+
+			.sale-date {
+				margin: 0;
+				font-size: 0.875rem;
+			}
+		}
+	}
+
+	.sale-details {
+		.sale-summary {
+			display: flex;
+			gap: 2rem;
+			margin-bottom: 1rem;
+			flex-wrap: wrap;
+
+			.summary-item {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+
+				mat-icon {
+					font-size: 1.25rem;
+					width: 1.25rem;
+					height: 1.25rem;
+				}
+
+				&.total-amount {
+					font-weight: 600;
+
+					.amount {
+						font-size: 1.125rem;
+					}
+				}
+			}
+		}
+
+		mat-divider {
+			margin: 1rem 0;
+		}
+
+		.items-list {
+			.item-row {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0.5rem 0;
+				border-bottom: 1px solid black;
+
+				&:last-child {
+					border-bottom: none;
+				}
+
+				.item-info {
+					display: flex;
+					flex-direction: column;
+					gap: 0.25rem;
+
+					.item-name {
+						font-weight: 500;
+					}
+
+					.item-quantity {
+						font-size: 0.875rem;
+					}
+				}
+
+				.item-price {
+					display: flex;
+					flex-direction: column;
+					align-items: flex-end;
+					gap: 0.25rem;
+
+					.unit-price {
+						font-size: 0.875rem;
+					}
+
+					.total-price {
+						font-weight: 600;
+					}
+				}
+			}
+		}
+	}
+}
+
+.summary-section {
+	.summary-card {
+		border-radius: 12px;
+		background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+		color: black;
+
+		.summary-stats {
+			display: flex;
+			justify-content: center;
+			gap: 4rem;
+
+			.stat-item {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+
+				mat-icon {
+					font-size: 2rem;
+					width: 2rem;
+					height: 2rem;
+					opacity: 0.9;
+				}
+
+				.stat-content {
+					display: flex;
+					flex-direction: column;
+
+					.stat-value {
+						font-size: 1.5rem;
+						font-weight: 600;
+					}
+
+					.stat-label {
+						font-size: 0.875rem;
+						opacity: 0.9;
+					}
+				}
+			}
+		}
+	}
+}
+
+.loading-more {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 2rem;
+	gap: 1rem;
+
+	p {
+		margin: 0;
+		font-size: 0.875rem;
+		font-weight: 500;
+	}
+}
+
+.all-loaded {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 2rem;
+	gap: 0.5rem;
+	color: var(--success-color);
+	opacity: 0.7;
+
+	mat-icon {
+		font-size: 2rem;
+		height: 2rem;
+		width: 2rem;
+	}
+
+	p {
+		margin: 0;
+		font-size: 0.875rem;
+		font-weight: 500;
+	}
+}
+
+@media (max-width: 1024px) {
+	.filters-form {
+		.filter-row {
+			mat-form-field {
+				min-width: 200px;
+			}
+		}
+	}
+
+	.summary-section {
+		.summary-stats {
+			gap: 2rem;
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.sales-management-container {
+		padding: 1rem;
+	}
+
+	.header-section {
+		.header-content {
+			flex-direction: column;
+			gap: 0.5rem;
+
+			.header-title {
+				font-size: 1.5rem;
+			}
+		}
+	}
+
+	.filters-form {
+		.filter-row {
+			flex-direction: column;
+
+			mat-form-field {
+				min-width: auto;
+			}
+		}
+
+		.filter-actions {
+			justify-content: center;
+		}
+	}
+
+	.sale-card {
+		.sale-header {
+			flex-direction: column;
+			gap: 1rem;
+			align-items: flex-start;
+		}
+
+		.sale-details {
+			.sale-summary {
+				flex-direction: column;
+				gap: 1rem;
+			}
+
+			.items-list {
+				.item-row {
+					flex-direction: column;
+					align-items: flex-start;
+					gap: 0.5rem;
+
+					.item-price {
+						align-items: flex-start;
+					}
+				}
+			}
+		}
+	}
+
+	.summary-section {
+		.summary-stats {
+			flex-direction: column;
+			gap: 1rem;
+		}
+	}
+}
