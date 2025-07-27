@@ -26,9 +26,11 @@
 					<mat-form-field appearance="outline">
 						<mat-label>E-mail</mat-label>
 						<input matInput type="email" formControlName="email" autocomplete="email" />
-						<mat-error *ngIf="hasFieldError('email')">
+						@if (hasFieldError('email')) {
+						<mat-error>
 							{{ getFieldError('email') }}
 						</mat-error>
+						}
 					</mat-form-field>
 
 					<mat-form-field appearance="outline">
@@ -42,9 +44,11 @@
 						<button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
 							<mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
 						</button>
-						<mat-error *ngIf="hasFieldError('password')">
+						@if (hasFieldError('password')) {
+						<mat-error>
 							{{ getFieldError('password') }}
 						</mat-error>
+						}
 					</mat-form-field>
 
 					<button
@@ -54,11 +58,15 @@
 						class="login-button"
 						[disabled]="loginForm.invalid || isLoading()"
 					>
-						<span *ngIf="!isLoading()" class="button-content">
-							Entrar
+						@if (!isLoading()) {
+						<span class="button-content">
+							<span>Entrar</span>
 							<mat-icon>arrow_forward</mat-icon>
 						</span>
-						<mat-spinner *ngIf="isLoading()" diameter="20" class="login-spinner"></mat-spinner>
+						}
+						@if (isLoading()) {
+						<mat-spinner diameter="20" class="login-spinner"></mat-spinner>
+						}
 					</button>
 
 					<div class="register-link">

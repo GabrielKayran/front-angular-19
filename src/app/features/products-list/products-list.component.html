@@ -157,12 +157,14 @@
 									<span class="price-value">{{ product.price | currency }}</span>
 								</div>
 
-								<div class="product-rating" *ngIf="product.rating">
+								@if (product.rating) {
+								<div class="product-rating">
 									<mat-chip class="rating-chip">
 										<mat-icon matChipAvatar>star</mat-icon>
 										{{ product.rating.rate }} ({{ product.rating.count }})
 									</mat-chip>
 								</div>
+								}
 							</div>
 						</div>
 					}

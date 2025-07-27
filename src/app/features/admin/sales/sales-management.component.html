@@ -41,9 +41,11 @@
 					<mat-form-field appearance="outline">
 						<mat-label>Status</mat-label>
 						<mat-select formControlName="status">
-							<mat-option *ngFor="let status of statusOptions" [value]="status.value">
+							@for (status of statusOptions; track status.value) {
+							<mat-option [value]="status.value">
 								{{ status.label }}
 							</mat-option>
+							}
 						</mat-select>
 						<mat-icon matSuffix>flag</mat-icon>
 					</mat-form-field>
@@ -73,16 +75,21 @@
 		</mat-card-content>
 	</mat-card>
 
-	<div *ngIf="loading()" class="d-flex align-items-center justify-content-center my-4">
+	@if (loading()) {
+	<div class="d-flex align-items-center justify-content-center my-4">
 		<mat-spinner diameter="50"></mat-spinner>
 	</div>
+	}
 
-	<div *ngIf="!loading() && sales().length === 0" class="empty-state">
+	@if (!loading() && sales().length === 0) {
+	<div class="empty-state">
 		<mat-icon class="empty-icon">point_of_sale</mat-icon>
 		<h2>Nenhuma venda encontrada</h2>
-		<p>Não há vendas que correspondam aos filtros aplicados.</p>
+		<p>Nenhuma venda encontrada com os filtros aplicados.</p>
 	</div>
-	<div *ngIf="!loading() && sales().length > 0" class="summary-section my-3">
+	}
+	@if (!loading() && sales().length > 0) {
+	<div class="summary-section my-3">
 		<mat-card class="summary-card">
 			<mat-card-content>
 				<div class="summary-stats">
@@ -104,36 +111,41 @@
 			</mat-card-content>
 		</mat-card>
 	</div>
+
 	<div
-		*ngIf="sales().length > 0"
 		class="sales-list"
 		infiniteScroll
 		[scrollWindow]="false"
-		[infiniteScrollDistance]="scrollDistance()"
-		[infiniteScrollThrottle]="300"
+		[infiniteScrollDistance]="2"
+		[infiniteScrollThrottle]="50"
 		[infiniteScrollContainer]="'.mat-drawer-content'"
-		[fromRoot]="true"
 		[infiniteScrollDisabled]="loading() || !hasMoreData()"
 		[alwaysCallback]="false"
 		[immediateCheck]="false"
 		(scrolled)="onScrollDown()"
 	>
+		@for (sale of sales(); track sale.id) {
 		<app-sale-card
-			*ngFor="let sale of sales()"
 			[sale]="sale"
 			[showActions]="true"
 			[isAdminMode]="true"
 			(cancelSale)="cancelSale($event)"
 		></app-sale-card>
+		}
 
-		<div *ngIf="loading() && sales().length > 0" class="loading-more">
+		@if (loading() && sales().length > 0) {
+		<div class="loading-more">
 			<mat-spinner diameter="30"></mat-spinner>
 			<p>Carregando mais vendas...</p>
 		</div>
+		}
 
-		<div *ngIf="!loading() && !hasMoreData() && sales().length > 0" class="all-loaded">
+		@if (!loading() && !hasMoreData() && sales().length > 0) {
+		<div class="all-loaded">
 			<mat-icon>check_circle</mat-icon>
 			<p>Todas as vendas foram carregadas</p>
 		</div>
+		}
 	</div>
+	}
 </div>

@@ -14,10 +14,12 @@
 	<mat-card-content>
 		<div class="sale-details">
 			<div class="sale-summary">
-				<div *ngIf="isAdminMode()" class="summary-item">
+				@if (isAdminMode()) {
+				<div class="summary-item">
 					<mat-icon>person</mat-icon>
 					<span>{{ sale().customer }}</span>
 				</div>
+				}
 				<div class="summary-item">
 					<mat-icon>store</mat-icon>
 					<span>{{ sale().branch }}</span>
@@ -35,7 +37,8 @@
 			<mat-divider></mat-divider>
 
 			<div class="items-list">
-				<div *ngFor="let item of sale().items" class="item-row">
+				@for (item of sale().items; track item.product) {
+				<div class="item-row">
 					<div class="item-info">
 						<span class="item-name">{{ item.product }}</span>
 						<span class="item-quantity">{{ item.quantity }}x</span>
@@ -45,20 +48,24 @@
 						<span class="total-price">{{ formatCurrency(item.totalAmount) }}</span>
 					</div>
 				</div>
+				}
 			</div>
 		</div>
 	</mat-card-content>
 
-	<mat-card-actions align="end" *ngIf="showActions() && isAdminMode()">
+	@if (showActions() && isAdminMode()) {
+	<mat-card-actions align="end">
+		@if (canCancelSale(sale().status)) {
 		<button
-			*ngIf="canCancelSale(sale().status)"
 			mat-button
 			color="warn"
 			(click)="onCancelSale()"
 			matTooltip="Cancelar venda"
 		>
 			<mat-icon>cancel</mat-icon>
-			Cancelar
+			Cancelar Venda
 		</button>
+		}
 	</mat-card-actions>
+	}
 </mat-card>
