@@ -103,7 +103,7 @@ src/
 
 ```bash
 # Clone the repository
-git clone https://github.com/GabrielKayran/ambev-front.git
+git clone https://github.com/gabriel-dev-test/ambev-front.git
 cd ambev-frontend
 
 # Install dependencies 
@@ -143,17 +143,6 @@ ng serve
 npm run build
 # or
 ng build --configuration production
-```
-
-### **Testing**
-```bash
-# Unit tests (Jasmine/Karma)
-npm test
-# or
-ng test
-
-# Tests with coverage
-ng test --code-coverage
 ```
 
 ### **Linting**
@@ -222,11 +211,6 @@ ng lint --fix
 - Standalone components throughout the application
 - Angular Signals for reactive state
 - New control flow syntax
-
-### **Known Limitations**
-- **Testing**: `jest-preset-angular` doesn't yet offer stable support for Angular 19
-- **Recommendation**: Use Jasmine/Karma for unit tests
-- **Alternative**: Wait for official Jest support for Angular 19
 
 ## 📱 Responsiveness
 
