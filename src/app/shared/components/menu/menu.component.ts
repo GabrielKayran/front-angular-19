@@ -34,7 +34,7 @@ export class MenuComponent implements OnInit {
 	}
 
 	public isRouteActive(route: string): boolean {
-		return this._router.url === route || this._router.url.startsWith(route + '/');
+		return this._router.url === route;
 	}
 
 	private _buildMenuItems() {
